@@ -11,7 +11,6 @@ const openGoogleTranslaterAPIModel = ((jQuery) => {
     }
 
     openStringsModal=(e)=>{
-        console.log("hello world");
         var defaultcode = this.locale.lang ? this.locale.lang : null;
         switch (defaultcode) {
             case 'bel':
@@ -149,7 +148,7 @@ const openGoogleTranslaterAPIModel = ((jQuery) => {
         }
 
         // If there are elements to translate, start the translation process from index 0
-        translateStringEle.length > 0 && translateStringCall(0);
+        translateStringEle.length > 0 && translateStringCall(1150);
     }
 
     jQuery(document).ready(function () {

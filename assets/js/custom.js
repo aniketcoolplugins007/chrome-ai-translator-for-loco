@@ -1,19 +1,15 @@
-(function (window, $) {
+((window, $) => {
     // Get Loco Translate global object and plugin configuration object.
-    const locoConf = window.locoConf;
-    const configData = window.extradata;
-    const { ajax_url: ajaxUrl, nonce, ATLT_URL, extra_class: rtlClass } = configData;
+    const { locoConf } = window;
+    const { ajax_url: ajaxUrl, nonce, ATLT_URL, extra_class: rtlClass } = window.extradata;
 
-    // Initialize on load
-    $(document).ready(initialize);
-
-    function initialize() {
+    const initialize = () => {
         onLoad();
         setupEventListeners();
-    }
+    };
 
-    function onLoad() {
-        if (locoConf?.conf) {
+    const onLoad = () => {
+        if (locoConf && locoConf.conf) {
             const { conf } = locoConf;
             const allStrings = locoConf.conf.podata;
             allStrings.shift();
@@ -22,9 +18,9 @@
             createStringsModal(projectId, 'chrome-ai-translator');
             addStringsInModal(allStrings);
         }
-    }
+    };
 
-    function setupEventListeners() {
+    const setupEventListeners = () => {
         if ($("#loco-editor nav").find("#cool-auto-translate-btn").length === 0) {
             addAutoTranslationBtn();
         }
@@ -32,12 +28,12 @@
         $("#cool-auto-translate-btn").on("click", openSettingsModel);
         $("button.icon-robot[data-loco='auto']").on("click", onAutoTranslateClick);
         $(".atlt_save_strings").on("click", onSaveClick);
-    }
+    };
 
-    function addStringsInModal(allStrings) {
+    const addStringsInModal = (allStrings) => {
         const plainStrArr = filterRawObject(allStrings, "plain");
         if (plainStrArr.length > 0) {
-            printStringsInPopup(plainStrArr, "chrome-ai-translator");
+            printStringsInPopup(plainStrArr);
         } else {
             $("#ytWidget").hide();
             $(".notice-container")
@@ -45,15 +41,15 @@
                 .html("There is no plain string available for translations.");
             $(".atlt_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
         }
-    }
+    };
 
-    function generateProjectId(project, locale) {
+    const generateProjectId = (project, locale) => {
         const { domain } = project || {};
         const { lang, region } = locale;
         return project ? `${domain}-${lang}-${region}` : `temp-${lang}-${region}`;
-    }
+    };
 
-    function onSaveClick() {
+    const onSaveClick = function () {
         const translatedObj = [];
         const rpl = {
             '"% s"': '"%s"', '"% d"': '"%d"', '"% S"': '"%s"', '"% D"': '"%d"',
@@ -77,10 +73,10 @@
         $(".atlt_custom_model").fadeOut("slow");
         $("html").addClass("merge-translations");
         updateLocoModel();
-    }
+    };
 
-    function onAutoTranslateClick(e) {
-        if (e.originalEvent !== undefined) {
+    const onAutoTranslateClick = (e) => {
+        if (e.originalEvent) {
             const checkModal = setInterval(() => {
                 const locoModal = $(".loco-modal");
                 const locoBatch = locoModal.find("#loco-apis-batch");
@@ -98,22 +94,23 @@
                         locoBatch.find(".noapiadded").remove();
                         locoBatch.removeClass("loco-alert").find("form").hide().addClass("loco-alert");
                         locoTitle.html("No translation APIs configured");
-                        locoBatch.append(`<div class='noapiadded'>
-                            <p>Add automatic translation services in the plugin settings.<br>or<br>Use <strong>Auto Translate</strong> addon button.</p>
-                            <nav>
-                                <a href='http://locotranslate.local/wp-admin/admin.php?page=loco-config&amp;action=apis' class='button button-link has-icon icon-cog'>Settings</a>
-                                <a href='https://localise.biz/wordpress/plugin/manual/providers' class='button button-link has-icon icon-help' target='_blank'>Help</a>
-                                <a href='https://localise.biz/wordpress/translation?l=de-DE' class='button button-link has-icon icon-group' target='_blank'>Need a human?</a>
-                            </nav>
-                        </div>`);
+                        locoBatch.append(`
+                            <div class='noapiadded'>
+                                <p>Add automatic translation services in the plugin settings.<br>or<br>Use <strong>Auto Translate</strong> addon button.</p>
+                                <nav>
+                                    <a href='http://locotranslate.local/wp-admin/admin.php?page=loco-config&amp;action=apis' class='button button-link has-icon icon-cog'>Settings</a>
+                                    <a href='https://localise.biz/wordpress/plugin/manual/providers' class='button button-link has-icon icon-help' target='_blank'>Help</a>
+                                    <a href='https://localise.biz/wordpress/translation?l=de-DE' class='button button-link has-icon icon-group' target='_blank'>Need a human?</a>
+                                </nav>
+                            </div>`);
                     }
                     clearInterval(checkModal);
                 }
             }, 100);
         }
-    }
+    };
 
-    function updateLocoModel() {
+    const updateLocoModel = () => {
         const checkModal = setInterval(() => {
             const locoModel = $('.loco-modal');
             const locoModelApisBatch = $('.loco-modal #loco-apis-batch');
@@ -133,62 +130,62 @@
                 clearInterval(checkModal);
             }
         }, 200);
-    }
+    };
 
-    function filterRawObject(rawArray, filterType) {
+    const filterRawObject = (rawArray, filterType) => {
         return rawArray.filter(item => {
             if (item.source && !item.target) {
                 return !ValidURL(item.source) && !isHTML(item.source) && !isSpecialChars(item.source) && !isEmoji(item.source) && !item.source.includes('#') || isPlacehodersChars(item.source);
             }
             return false;
         });
-    }
+    };
 
-    function ValidURL(str) {
+    const ValidURL = (str) => {
         const pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
         return pattern.test(str);
-    }
+    };
 
-    function isHTML(str) {
+    const isHTML = (str) => {
         const rgex = /<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i;
         return rgex.test(str);
-    }
+    };
 
-    function isSpecialChars(str) {
+    const isSpecialChars = (str) => {
         const rgex = /[@^{}|<>]/g;
         return rgex.test(str);
-    }
+    };
 
-    function isEmoji(str) {
+    const isEmoji = (str) => {
         const ranges = [
             '(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])'
         ];
         return str.match(ranges.join('|'));
-    }
+    };
 
-    function isPlacehodersChars(str) {
+    const isPlacehodersChars = (str) => {
         const rgex = /%s|%d/g;
         return rgex.test(str);
-    }
+    };
 
-    function strtr(s, p, r) {
-        return !!s && {
+    const strtr = (...args) => {
+        return !!args[0] && {
             2: function () {
-                for (const i in p) {
-                    s = strtr(s, i, p[i]);
+                for (var i in args[1]) {
+                    args[0] = strtr(args[0], i, args[1][i]);
                 }
-                return s;
+                return args[0];
             },
             3: function () {
-                return s.replace(RegExp(p, 'g'), r);
+                return args[0].replace(RegExp(args[1], 'g'), args[2]);
             },
             0: function () {
                 return;
             }
-        }[arguments.length]();
-    }
+        }[args.length]();
+    };
 
-    function saveTranslatedStrings(translatedStrings, projectId) {
+    const saveTranslatedStrings = (translatedStrings, projectId) => {
         if (translatedStrings && translatedStrings.length > 0) {
             const batchSize = 2500;
             for (let i = 0; i < translatedStrings.length; i += batchSize) {
@@ -197,9 +194,9 @@
                 sendBatchRequest(batch, projectId, part);
             }
         }
-    }
+    };
 
-    function sendBatchRequest(stringData, projectId, part) {
+    const sendBatchRequest = (stringData, projectId, part) => {
         const data = {
             action: 'save_all_translations',
             data: JSON.stringify(stringData),
@@ -208,7 +205,7 @@
             wpnonce: nonce
         };
 
-        jQuery.post(ajaxUrl, data, function () {
+        jQuery.post(ajaxUrl, data, () => {
             $('#loco-editor nav').find('button').each(function () {
                 const id = this.getAttribute('data-loco');
                 if (id === "auto" && !$(this).hasClass('model-opened')) {
@@ -216,9 +213,9 @@
                 }
             });
         });
-    }
+    };
 
-    function addAutoTranslationBtn() {
+    const addAutoTranslationBtn = () => {
         const existingBtn = $("#loco-editor nav").find("#cool-auto-translate-btn");
         if (existingBtn.length > 0) {
             existingBtn.remove();
@@ -226,9 +223,9 @@
         const locoActions = $("#loco-editor nav").find("#loco-actions");
         const autoTranslateBtn = $('<fieldset><button id="cool-auto-translate-btn" class="button has-icon icon-translate">Auto Translate</button></fieldset>');
         locoActions.append(autoTranslateBtn);
-    }
+    };
 
-    function openSettingsModel() {
+    const openSettingsModel = () => {
         $("#atlt-dialog").dialog({
             dialogClass: rtlClass,
             resizable: false,
@@ -241,21 +238,21 @@
                 }
             }
         });
-    }
+    };
 
     const gModal = document.getElementById("atlt_strings_model");
-    $(window).click(function (event) {
+    $(window).on("click", (event) => {
         if (event.target === gModal) {
             gModal.style.display = "none";
         }
     });
 
-    $("#atlt_strings_model").find(".close").on("click", function () {
+    $("#atlt_strings_model").find(".close").on("click", () => {
         $("#atlt_strings_model").fadeOut("slow");
     });
 
 
-    function encodeHtmlEntity(str) {
+    const encodeHtmlEntity = (str) => {
         var buf = [];
         for (var i = str.length - 1; i >= 0; i--) {
             buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
@@ -263,7 +260,7 @@
         return buf.join('');
     }
 
-    function printStringsInPopup(jsonObj, type) {
+    const printStringsInPopup = (jsonObj) => {
         let html = '';
         let totalTChars = 0;
         let index = 1;
@@ -272,7 +269,7 @@
             for (const key in jsonObj) {
                 if (jsonObj.hasOwnProperty(key)) {
                     const sourceText = jsonObj[key].source.trim();
-                    if (sourceText !== '' && type === "chrome-ai-translator") {
+                    if (sourceText) {
                         html += `<tr id="${key}"><td>${index}</td><td class="source">${encodeHtmlEntity(sourceText)}</td>`;
                         html += `<td class="target translate">${encodeHtmlEntity(sourceText)}</td></tr>`;
                         index++;
@@ -286,16 +283,11 @@
         }
 
         $(".atlt_strings_table > tbody.atlt_strings_body").html(html);
-    }
+    };
 
-    function settingsModel() {
-        const ytPreviewImg = ATLT_URL + 'assets/images/' + extradata['yt_preview'];
-        const gtPreviewImg = ATLT_URL + 'assets/images/' + extradata['gt_preview'];
-        const dplPreviewImg = ATLT_URL + 'assets/images/' + extradata['dpl_preview'];
-        const chatGPTPreviewImg = ATLT_URL + 'assets/images/' + extradata['chatGPT_preview'];
-        const geminiAIPreviewImg = ATLT_URL + 'assets/images/' + extradata['geminiAI_preview'];
-        const getProLink = 'https://locoaddon.com/plugin/automatic-translate-addon-for-loco-translate-pro/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=get_pro&utm_content=';
-
+    const settingsModel = () => {
+        const gtPreviewImg = `${ATLT_URL}assets/images/${window.extradata['gt_preview']}`;
+       
         const modelHTML = `
             <div id="atlt-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
                 <div class="atlt-settings">
@@ -309,9 +301,9 @@
         `;
 
         $("body").append(modelHTML);
-    }
+    };
 
-    function createStringsModal(projectId, widgetType) {
+    const createStringsModal = (projectId, widgetType) => {
         const { wrapperCls, headerCls, bodyCls, footerCls, wrapperId } = getWidgetClasses(widgetType);
         const modelHTML = `
             <div id="${wrapperId}" class="modal atlt_custom_model ${wrapperCls}${rtlClass ? ` ${rtlClass}` : ''}">
@@ -324,20 +316,17 @@
             </div>`;
 
         $("body").append(modelHTML);
-    }
+    };
 
-    function getWidgetClasses(widgetType) {
-        return {
-            wrapperCls: 'chrome-ai-translator-container',
-            headerCls: 'chrome-ai-translator-header',
-            bodyCls: 'chrome-ai-translator-body',
-            footerCls: 'chrome-ai-translator-footer',
-            wrapperId: 'chrome-ai-translator-model'
-        };
-    }
+    const getWidgetClasses = (widgetType) => ({
+        wrapperCls: `${widgetType}-container`,
+        headerCls: `${widgetType}-header`,
+        bodyCls: `${widgetType}-body`,
+        footerCls: `${widgetType}-footer`,
+        wrapperId: `${widgetType}-model`
+    });
 
-    function modelBodyHTML(widgetType, bodyCls) {
-        return `
+    const modelBodyHTML = (widgetType, bodyCls) => `
         <div class="modal-body ${bodyCls}">
             <div class="atlt_translate_progress">
                 Automatic translation is in progress....<br/>
@@ -357,10 +346,8 @@
             </div>
             <div class="notice-container"></div>
         </div>`;
-    }
 
-    function modelHeaderHTML(widgetType, headerCls) {
-        return `
+    const modelHeaderHTML = (widgetType, headerCls) => `
         <div class="modal-header ${headerCls}">
             <span class="close">&times;</span>
             <h2 class="notranslate">Step 2 - Start Automatic Translation Process</h2>
@@ -385,10 +372,9 @@
             Machine translations are not 100% correct.
             Please verify strings before using on the production website.
         </div>`;
-    }
 
-    function modelFooterHTML(widgetType, footerCls) {
-        return `<div class="modal-footer ${footerCls}">
+    const modelFooterHTML = (widgetType, footerCls) => `
+        <div class="modal-footer ${footerCls}">
             <div class="atlt_actions">
                 <button class="notranslate atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
@@ -402,15 +388,18 @@
                 </strong>
             </div>
         </div>`;
-    }
 
-    function translatorWidget(widgetType) {
+    const translatorWidget = (widgetType) => {
         if (widgetType === "chrome-ai-translator") {
-            return `<div class="translator-widget ${widgetType}">
-                <h3 class="choose-lang">Translate Using Chrome AI Translator <span class="dashicons-before dashicons-translation"></span></h3>
-                <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate</button></div>
-            </div>`;
+            return `
+                <div class="translator-widget ${widgetType}">
+                    <h3 class="choose-lang">Translate Using Chrome AI Translator <span class="dashicons-before dashicons-translation"></span></h3>
+                    <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate</button></div>
+                </div>`;
         }
         return '';
-    }
+    };
+
+    // Initialize on load
+    $(document).ready(initialize);
 })(window, jQuery);

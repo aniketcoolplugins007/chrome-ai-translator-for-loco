@@ -310,10 +310,6 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 				$extraData['ATLT_URL']        = ATLT_URL;
 				$extraData['preloader_path']  = 'preloader.gif';
 				$extraData['gt_preview']      = 'powered-by-google.png';
-				$extraData['dpl_preview']     = 'powered-by-deepl.png';
-				$extraData['yt_preview']      = 'powered-by-yandex.png';
-				$extraData['chatGPT_preview'] = 'powered-by-chatGPT.png';
-				$extraData['geminiAI_preview'] = 'powered-by-geminiAI.png';
 				$extraData['extra_class']     = is_rtl() ? 'atlt-rtl' : '';
 
 				$extraData['loco_settings_url'] = admin_url( 'admin.php?page=loco-config&action=apis' );
