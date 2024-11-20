@@ -30,36 +30,6 @@
   margin-top: 5px;
 }
 
-.pro-features-img{
-  width: 50%;
-}
-
-span.proonly-button {
-  background: #555;
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-  font-family: monospace;
-  padding: 3px;
-  border-radius: 3px;
-  display: inline-block;
-  margin: 3px 0px 4px 4px;
-}
-
-span.proonly-button a {
-  color: #fff;
-  text-decoration: none;
-}
-
-span.proonly-button.alsofree {
-  background: green;
-}
-
-span.proonly-button.alsofree img {
-  filter: brightness(10);
-  -webkit-filter: brightness(10);
-}
-
 span.beta-button {
   background: green;
   color: #fff;
@@ -154,20 +124,6 @@ span.beta-button {
   right: 40px;
 }
 
-.yandex-widget-container .atlt_actions button:not([disabled]):before {
-  font-family: dashicons;
-  content: "\f345";
-  display: inline-block;
-  font-size: 24px;
-  line-height: 26px;
-  vertical-align: middle;
-  left: -20px;
-  position: absolute;
-  color: #fff;
-  animation: moveit 5s infinite;
-  -webkit-animation: moveit 1s infinite;
-}
-
 /* Keyframes for Action Button */
 @keyframes moveit {
   from {
@@ -217,10 +173,10 @@ span.beta-button {
 }
 
 /* String Container Styles */
-.atlt_custom_model .atlt_string_container {
+#chrome-ai-translator-model.atlt_custom_model .atlt_string_container {
   overflow-y: scroll;
   overflow-x: hidden;
-  height: calc(100vh - 460px);
+  height: calc(100vh - 410px);
   width: 100%;
   position: relative;
 }
@@ -286,24 +242,6 @@ span.beta-button {
   max-height: 66px;
 }
 
-/* Hide Google Translate Banner */
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
-
-/* Hide the First Option in Google Translate Combo */
-.goog-te-combo option:first-child {
-  display: none;
-}
-
-#yt-widget .yt-listbox__text {
-  line-height: 14px !important;
-}
-
-#yt-widget .yt-listbox__input:not(:checked) ~ .yt-listbox__text {
-  display: none !important;
-}
-
 /* Loco Hint Styles */
 #loco-hint .loco-api.loco-api-loco_auto {
   display: none;
@@ -327,6 +265,36 @@ html.merge-translations:before {
   border: 6px solid #5cb85c;
 }
 
+#chrome_ai_translator_btn:disabled {
+  background: #f3f3f3;
+  border-color: #d7d7d7;
+  color: #a3a3a3;
+  cursor: not-allowed;
+}
+
+#chrome_ai_translator_btn {
+  padding: .4rem;
+  margin-bottom: 1rem;
+  border: 1px solid #2271b1;
+  background: transparent;
+  color: #2271b1;
+  font-size: .9rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+#chrome_ai_translator_btn:hover:not(:disabled) {
+  background: #2271b1;
+  color: white;
+}
+
+#chrome_ai_translator_btn:focus:not(:disabled) {
+  color: white;
+  box-shadow: 0 0 0 1px #fff,0 0 0 3px #2271b1;
+  background-color: #135e96;
+}
+
 @media screen and (max-width: 769px) {
   .atlt_custom_model .atlt_string_container {
     height: calc(100vh - 570px);
@@ -343,10 +311,6 @@ html.merge-translations:before {
 
   .modal-header .atlt_stats{
     margin: 5px 160px 5px 0 !important;
-  }
-
-  .yandex-widget-container .atlt_actions button:not([disabled]):before{
-    line-height: 21px;
   }
 }
 
@@ -367,7 +331,6 @@ div.ui-dialog[aria-describedby="atlt-dialog"].atlt-rtl{
   transform: translate(-50%, -50%);
   right: auto;
 }
-
 
 .atlt_custom_model.atlt-rtl .atlt_actions{
   right: auto;

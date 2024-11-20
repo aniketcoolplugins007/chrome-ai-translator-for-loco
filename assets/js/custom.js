@@ -293,8 +293,8 @@
                 <div class="atlt-settings">
                      <strong class="atlt-heading">Translate Using Chrome AI Translator</strong>
                     <div class="inputGroup">
-                       <button id="atlt_chromeAI_btn" class="notranslate button button-primary">Chrome AI Translator</button>
-                        <br/><a href="https://gemini.google.com/" target="_blank"><img class="pro-features-img" src="${gtPreviewImg}" alt="powered by Gemini AI"></a>
+                       <button id="atlt_chromeAI_btn" class="button button-primary">Chrome AI Translator</button>
+                        <br/><a href="https://translate.google.com/" target="_blank"><img src="${gtPreviewImg}" alt="powered by Chrome AI Translator"></a>
                     </div>
                 </div>
             </div>
@@ -337,9 +337,9 @@
             <div class="atlt_string_container">
                 <table class="scrolldown atlt_strings_table">
                     <thead>
-                        <th class="notranslate">S.No</th>
-                        <th class="notranslate">Source Text</th>
-                        <th class="notranslate">Translation</th>
+                        <th>S.No</th>
+                        <th>Source Text</th>
+                        <th>Translation</th>
                     </thead>
                     <tbody class="atlt_strings_body"></tbody>
                 </table>
@@ -350,9 +350,9 @@
     const modelHeaderHTML = (widgetType, headerCls) => `
         <div class="modal-header ${headerCls}">
             <span class="close">&times;</span>
-            <h2 class="notranslate">Step 2 - Start Automatic Translation Process</h2>
+            <h2>Step 2 - Start Automatic Translation Process</h2>
             <div class="atlt_actions">
-                <button class="notranslate atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
+                <button class="atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
             <div style="display:none" class="atlt_stats hidden">
                 Wahooo! You have saved your valuable time via auto translating 
@@ -365,8 +365,8 @@
             </div>
         </div>
         <div class="notice inline notice-info is-dismissible">
-            Plugin will not translate any strings with HTML or special characters because Yandex Translator currently does not support HTML and special characters translations.
-            You can edit translated strings inside Loco Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
+            Plugin will not translate any strings with HTML or special characters because Chrome AI Translator currently does not support HTML and special characters translations.
+                        You can edit translated strings inside Loco Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
         </div>
         <div class="notice inline notice-info is-dismissible">
             Machine translations are not 100% correct.
@@ -376,7 +376,7 @@
     const modelFooterHTML = (widgetType, footerCls) => `
         <div class="modal-footer ${footerCls}">
             <div class="atlt_actions">
-                <button class="notranslate atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
+                <button class="atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
             <div style="display:none" class="atlt_stats">
                 Wahooo! You have saved your valuable time via auto translating 
@@ -394,7 +394,7 @@
             return `
                 <div class="translator-widget ${widgetType}">
                     <h3 class="choose-lang">Translate Using Chrome AI Translator <span class="dashicons-before dashicons-translation"></span></h3>
-                    <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate</button></div>
+                    <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate to ${locoConf.conf.locale.label}</button></div>
                 </div>`;
         }
         return '';
