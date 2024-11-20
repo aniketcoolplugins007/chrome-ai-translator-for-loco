@@ -307,7 +307,7 @@
     };
 
     const settingsModel = () => {
-        const gtPreviewImg = `${ATLT_URL}assets/images/${window.extradata['gt_preview']}`;
+        const chromeAiPreviewImg = `${ATLT_URL}assets/images/${window.extradata['chrome_ai_preview']}`;
        
         const modelHTML = `
             <div id="atlt-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
@@ -315,7 +315,7 @@
                      <strong class="atlt-heading">Translate Using Chrome AI Translator</strong>
                     <div class="inputGroup">
                        <button id="atlt_chromeAI_btn" class="button button-primary">Chrome AI Translator</button>
-                        <br/><a href="https://translate.google.com/" target="_blank"><img src="${gtPreviewImg}" alt="powered by Chrome AI Translator"></a>
+                        <br/><a href="https://translate.google.com/" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
                     </div>
                 </div>
             </div>

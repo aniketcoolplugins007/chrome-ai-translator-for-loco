@@ -26,10 +26,6 @@
   display: inline-block;
 }
 
-.inputGroup img{
-  margin-top: 5px;
-}
-
 span.beta-button {
   background: green;
   color: #fff;
@@ -293,6 +289,20 @@ html.merge-translations:before {
   color: white;
   box-shadow: 0 0 0 1px #fff,0 0 0 3px #2271b1;
   background-color: #135e96;
+}
+
+#atlt_chromeAI_btn ~ a{
+  margin-top: .5rem;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display: flex;
+  color: black;
+  font-weight: 600;
+  align-items: center;
+}
+
+#atlt_chromeAI_btn ~ a img{
+  margin-inline: .2rem;
 }
 
 #atlt_chromeAI_btn ~ a:focus{
