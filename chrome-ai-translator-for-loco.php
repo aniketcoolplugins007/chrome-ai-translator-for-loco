@@ -51,13 +51,6 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		}
 
 		/**
-		 * Constructor.
-		 */
-		public function __construct() {
-			// Setup your plugin object here
-		}
-
-		/**
 		 * Registers our plugin with WordPress.
 		 */
 		public static function register() {
@@ -73,30 +66,12 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 
 				add_action( 'init', array( $thisPlugin, 'onInit' ) );
 
-				/*** Plugin Setting Page Link inside All Plugins List */
-				add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $thisPlugin, 'atlt_settings_page_link' ) );
-				add_action( 'init', array( $thisPlugin, 'updateSettings' ) );
-
-				add_action( 'plugins_loaded', array( $thisPlugin, 'atlt_include_files' ) );
-
 				add_action( 'admin_enqueue_scripts', array( $thisPlugin, 'atlt_enqueue_scripts' ) );
 
 				/* since version 2.1 */
 				add_filter( 'loco_api_providers', array( $thisPlugin, 'atlt_register_api' ), 10, 1 );
 				add_action( 'loco_api_ajax', array( $thisPlugin, 'atlt_ajax_init' ), 0, 0 );
 				add_action( 'wp_ajax_save_all_translations', array( $thisPlugin, 'save_translations_handler' ) );
-
-				/*
-				since version 2.0
-				Yandex translate widget integration
-				*/
-				// add no translate attribute in html tag
-				if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'file-edit' ) {
-					add_action( 'admin_footer', array( $thisPlugin, 'atlt_load_ytranslate_scripts' ), 100 );
-					add_filter( 'admin_body_class', array( $thisPlugin, 'atlt_add_custom_class' ) );
-				}
-
-				add_action( 'admin_menu', array( $thisPlugin, 'atlt_add_locotranslate_sub_menu' ), 101 );
 			}
 		}
 
@@ -232,22 +207,6 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 
 		/*
 		|----------------------------------------------------------------------
-		| Yandex Translate Widget Integrations
-		| add no translate attribute in html tag
-		|----------------------------------------------------------------------
-		*/
-		function atlt_load_ytranslate_scripts() {
-			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'file-edit' ) {
-				echo "<script>document.getElementsByTagName('html')[0].setAttribute('translate', 'no');</script>";
-			}
-		}
-		// add no translate class in admin body to disable whole page translation
-		function atlt_add_custom_class( $classes ) {
-			return "$classes notranslate";
-		}
-
-		/*
-		|----------------------------------------------------------------------
 		| check if required "Loco Translate" plugin is active
 		| also register the plugin text domain
 		|----------------------------------------------------------------------
@@ -282,27 +241,6 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 				) . '.</p></div>';
 
 				 deactivate_plugins( __FILE__ );
-			}
-		}
-		/*
-		|----------------------------------------------------------------------
-		| create 'settings' link in plugins page
-		|----------------------------------------------------------------------
-		*/
-		public function atlt_settings_page_link( $links ) {
-			$links[] = '<a style="font-weight:bold" href="' . esc_url( get_admin_url( null, 'admin.php?page=loco-atlt-register' ) ) . '">Buy PRO</a>';
-			return $links;
-		}
-
-		/*
-		|----------------------------------------------------------------------
-		| Update and remove old review settings
-		|----------------------------------------------------------------------
-		*/
-		public function updateSettings() {
-			if ( get_option( 'atlt-ratingDiv' ) ) {
-				update_option( 'atlt-already-rated', get_option( 'atlt-ratingDiv' ) );
-				delete_option( 'atlt-ratingDiv' );
 			}
 		}
 
@@ -344,16 +282,6 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 			}
 		}
 
-		/*
-		|----------------------------------------------------------------------
-		| required php files
-		|----------------------------------------------------------------------
-		*/
-		public function atlt_include_files() {
-			if ( is_admin() ) {
-				require_once ATLT_PATH . 'includes/Helpers/Helpers.php';
-			}
-		}
 
 		/*
 		|------------------------------------------------------------------------
@@ -454,132 +382,6 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 			delete_option( 'atlt-installDate' );
 			delete_option( 'atlt-already-rated' );
 			delete_option( 'atlt-type' );
-		}
-
-		/*
-		|-------------------------------------------------------
-		|   Automatic Translate Addon For Loco Translate  admin page
-		|-------------------------------------------------------
-		*/
-		function atlt_add_locotranslate_sub_menu() {
-			add_submenu_page(
-				'loco',
-				'Loco Automatic Translate',
-				'Auto Translate Addon',
-				'manage_options',
-				'loco-atlt-register',
-				array( self::$instance, 'atlt_options_page' )
-			);
-		}
-
-		function atlt_options_page() {
-			$text_domain = 'loco-auto-translate';
-			?>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<div class="el-license-container">
-				<h3 class="el-license-title"><i class="dashicons-before dashicons-translation"></i> <?php _e( 'Automatic Translate Addon For Loco Translate', $text_domain ); ?></h3>
-				<div class="el-license-content">
-					
-					<div class="el-license-textbox">
-						<a class="button button-primary" href='<?php echo esc_url( admin_url( 'admin.php?page=loco-theme' ) ); ?>'>Translate Themes</a> <a class="button button-secondary" href='<?php echo esc_url( admin_url( 'admin.php?page=loco-plugin' ) ); ?>'>Translate Plugins</a>
-						<h3>Compare Free vs Pro (<a href='https://locoaddon.com/plugin/automatic-translate-addon-for-loco-translate-pro/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=get_pro&utm_content=dashboard' target='_blank'>Buy Pro Plugin</a>)</h3>
-						<table class="loco-addon-license">
-						<tr>
-						<th>Features</th>
-						<th>Free Plugin</th>
-						<th>Premium Plugin</th>
-						</tr>
-						<tr>
-						<td>Yandex Translate Widget Support<br/><img style="border: 1px solid;" src="<?php echo ATLT_URL . '/assets/images/powered-by-yandex.png'; ?>"/></td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available</td>
-						</tr>
-						<tr>
-						<td>Unlimited Translations</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/><span style="font-size:11px;font-weight:bold;">(Via Yandex Only)</span></td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/><span style="font-size:11px;font-weight:bold;">(Via Yandex, Google & AI)</td>
-						</tr>
-						<tr>
-						<td>No API Key Required</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> API Not Required<br/><span style="font-size:11px;font-weight:bold;">(Support's Only Yandex)</span></td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> API Not Required<br/><span style="font-size:11px;font-weight:bold;">(Support's Yandex, Google, DeepL & AI)</span></td>
-						</tr>
-						<tr style="background:#fffb7a;font-weight: bold;">
-						<td>Google Translate Widget Support<br/><img style="border: 1px solid;" src="<?php echo ATLT_URL . '/assets/images/powered-by-google.png'; ?>"/></td>
-						<td>❌ Not Available</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/><span style="font-size:11px;font-weight:bold;">(Better than Yandex)</span></td>
-						</tr>
-						<tr style="background:#fffb7a;font-weight: bold;">
-						<td>DeepL Doc Translator Support<br/><img style="border: 1px solid;" src="<?php echo ATLT_URL . '/assets/images/powered-by-deepl.png'; ?>"/></td>
-						<td>❌ Not Available</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/><span style="font-size:11px;font-weight:bold;">(Limited Free Docs Translations / Day)</span></td>
-						</tr>
-						<tr style="background:#fffb7a;font-weight: bold;">
-						<td>AI Translator Support<br/><img style="border: 1px solid;" src="<?php echo ATLT_URL . '/assets/images/powered-by-chatGPT.png'; ?>"/></td>
-						<td>❌ Not Available</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/></td>
-						</tr>
-						<tr style="background:#fffb7a;font-weight: bold;">
-						<td>AI Translator Support<br/><img style="border: 1px solid;" src="<?php echo ATLT_URL . '/assets/images/powered-by-geminiAI.png'; ?>"/></td>
-						<td>❌ Not Available</td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/><span style="font-size:11px;font-weight:bold;"><a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">(Get free API key)</a></span></td>
-						</tr>
-						<tr>
-						<td><strong>Premium Support</strong></td>
-						<td>❌ Not Available<br/><strong>(Support Time: 7 – 10 days)</strong></td>
-						<td><span style="color:green;font-size:1.4em;">✔</span> Available<br/><strong>(Support Time: 24 - 48 Hrs)</strong></td>
-						</tr>
-						</table>
-						
-					</div>
-					<div class="el-license-form">
-						<strong style="color:#e00b0b;">*Important Points</strong>
-						<ol>
-						<li>Premium version supports <b>Google Translate</b> for better translations.</li>
-						<li>Automatic translate providers do not support HTML and special characters translations. So plugin will not automatic translate any string that contains HTML or special characters.</li>
-						<li>If any auto-translation provider stops any of its free translation service then plugin will not support that translation service provider.</li>
-						<li>DeepL Translate provides better translations than Google, Yandex or other machine translation providers. <a href="https://techcrunch.com/2017/08/29/deepl-schools-other-online-translators-with-clever-machine-learning/" target="_blank"><b>Read review by Techcrunch!</b></a></li>
-						<li>Currently DeepL Doc Translator provides limited number of free docs translations per day. You can purchase to <a href="https://www.deepl.com/pro?cta=homepage-free-trial#pricing" target="_blank">DeepL Pro</a> to increase this limit.</li>
-						<li>To start translation using Gemini <a href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank">get free Gemini API key</a></li>
-						</ol>
-						<br/>
-						<a class="button button-primary" href='https://locoaddon.com/plugin/automatic-translate-addon-for-loco-translate-pro/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=get_pro&utm_content=dashboard' target='_blank'>Buy Pro Plugin</a>
-						
-						<h3>Explore Our Other Automatic Translation Plugins</h3>
-						<ul style="list-style:disc">
-							<li><strong><a target="_blank" href="https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=get_pro&utm_content=check_out">Automatic Translate Addon For TranslatePress</a></strong>
-							It enables you to translate entire page content with a single click, removing the need to manually translate each element individually.
-							</br><a style="margin-top:5px" class="button button-primary" target="_blank" href="https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=get_pro&utm_content=check_out">Try It Now</a>
-							</li>
-							<li><strong><a target="_blank" href="https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=cross_promotion&utm_content=check_out">Automatic Translations For Polylang</a></strong>
-								It allows you to translate entire Polylang-created pages, posts, and meta fields with a single click, eliminating the need for manual translation of each element. Compatible with Gutenberg and popular blocks, it makes managing multilingual websites effortless.
-								</br><a  style="margin-top:5px" class="button button-primary" target="_blank" href="https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=atlt_plugin&utm_medium=inside&utm_campaign=cross_promotion&utm_content=check_out">Try It Now</a>
-							</li>
-						</ul>
-
-						
-						<div class="el-pluginby">
-							Plugin by<br/>
-							<a href="https://coolplugins.net" target="_blank"><img src="<?php echo ATLT_URL . '/assets/images/coolplugins-logo.png'; ?>"/></a>
-						</div>
-
-					</div>
-				</div>
-			</div>
-			</form>
-			<style type="text/css">
-			  .el-license-container{margin-top:20px;padding:0;display:inline-block;margin:15px auto;box-sizing:border-box;width:calc(100% - 20px);background:#fff;border-radius:10px;border:1px solid #ddd;box-shadow:0 0 10px -5px #afafaf;overflow:hidden;position:relative}.el-license-container *{box-sizing:border-box}
-			  .el-license-container h3.el-license-title{background-color:#5cb85c;background:linear-gradient(to right,#5cb85c,#1f9e5e);padding:20px 10px;margin:0;display:inline-block;width:100%;color:#fff;font-size:22px;line-height:22px}
-				.el-license-form,
-				.el-license-textbox {
-				display: inline-block;
-				width: calc(50% - 5px);
-				vertical-align: top;
-				}.el-license-textbox {
-				padding-right: 40px;
-				}.el-license-container .el-license-content{padding:25px;width:100%;display:inline-block}.el-license-container .el-license-title{margin-top:0;font-size:30px}table.loco-addon-license{width:100%;table-layout:fixed !IMPORTANT}table.loco-addon-license tr th,table.loco-addon-license tr td{border:1px solid #bbb;padding:12px;text-align:center;width:33%}table.loco-addon-license img{max-width:100%}table.loco-addon-license tr td strong img{height:28px;width:auto;vertical-align:middle}.el-pluginby{width:100%;display:block;text-align:right;font-style:italic}.el-pluginby img{max-width:100px}@media only screen and (max-width:940px){.el-license-form,.el-license-textbox{width:100%}.el-license-form{padding-right:0}}
-		   </style>
-			<?php
 		}
 
 		/**
