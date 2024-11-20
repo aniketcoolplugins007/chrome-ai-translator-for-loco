@@ -3,9 +3,28 @@
     const { locoConf } = window;
     const { ajax_url: ajaxUrl, nonce, ATLT_URL, extra_class: rtlClass } = window.extradata;
 
-    const initialize = () => {
-        onLoad();
+    const initialize = async () => {
+        const langSupported = await checkChromeAILangStatus();
+
+        console.log(langSupported);
+        if(langSupported === "readily") {
+            onLoad();
+        }
         setupEventListeners();
+    };
+
+    const checkChromeAILangStatus = async () => {
+        if(locoConf && locoConf.conf) {
+            const { locale } = locoConf.conf;
+            const canTranslate = await translation.canTranslate({
+                sourceLanguage: 'en',
+                targetLanguage: locale.lang,
+            });
+            
+            return canTranslate;
+        }
+
+        return false;
     };
 
     const onLoad = () => {
@@ -15,8 +34,10 @@
             allStrings.shift();
             const { locale, project } = conf;
             const projectId = generateProjectId(project, locale);
+            checkChromeAILangStatus();
             createStringsModal(projectId, 'chrome-ai-translator');
             addStringsInModal(allStrings);
+            stringModalEvents();
         }
     };
 
@@ -240,16 +261,19 @@
         });
     };
 
-    const gModal = document.getElementById("atlt_strings_model");
-    $(window).on("click", (event) => {
-        if (event.target === gModal) {
-            gModal.style.display = "none";
-        }
-    });
+    const stringModalEvents = () => {
+        $(window).on("click", (event) => {
+            if (!event.target.closest(".modal-content") && !event.target.closest("#atlt-dialog")) {
+                $(".atlt_custom_model").hide();
+            }
+        });
 
-    $("#atlt_strings_model").find(".close").on("click", () => {
-        $("#atlt_strings_model").fadeOut("slow");
-    });
+    
+        $(".atlt_custom_model").find(".close").on("click", () => {
+            $(".atlt_custom_model").fadeOut("slow");
+        });
+    };
+
 
 
     const encodeHtmlEntity = (str) => {
