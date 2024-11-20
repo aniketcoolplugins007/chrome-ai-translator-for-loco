@@ -19,7 +19,7 @@ The Automatic Translate Addon for Loco Translate is a powerful tool for develope
 The Automatic Translate Addon for Loco Translate is a powerful tool for developers looking to quickly **translate** their WordPress **plugins and themes**. 
 The plugin integrates with the **Loco Translate** plugin to provide a seamless experience for users. The addon uses **machine translation** to **automatically translate** the plugin and theme strings into the desired language, **saving time and effort** for website owners who need to quickly translate their content into multiple languages.
 
-[How It Works ⇗](https://locoaddon.com/how-it-works/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=how_it_works) | [Buy Pro ⇗](https://locoaddon.com/plugin/automatic-translate-addon-for-loco-translate-pro/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=buy_now)
+[How It Works ⇗](https://locoaddon.com/how-it-works/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=how_it_works) | [Buy Pro ⇗](https://locoaddon.com/plugin/automatic-translate-addon-for-loco-translate-pro/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=buy_now)
 
 https://www.youtube.com/watch?v=X_1RbSVgnOc
 
@@ -97,13 +97,13 @@ In addition to its efficiency and ease of use, the Automatic Translate Addon als
 
 > **Important Notice:-** This plugin works as an auto-translate addon for the Loco Translate official plugin latest version(2.4.4 or higher).
 
-Check out our new [Automatic Translations For Polylang](https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=cross_promotion&utm_content=check_out)
+Check out our new [Automatic Translations For Polylang](https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=cross_promotion&utm_content=check_out)
 
-[Automatic Translations For Polylang](https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=cross_promotion&utm_content=check_out)  is a powerful addon that streamlines the process of translating WordPress content. By automatically copying and translating posts, including titles, content, images, and meta fields, this plugin helps you efficiently manage multilingual websites. Compatible with Gutenberg and popular third-party blocks, it preserves all styles and formats, ensuring a consistent look across languages. 
+[Automatic Translations For Polylang](https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=cross_promotion&utm_content=check_out)  is a powerful addon that streamlines the process of translating WordPress content. By automatically copying and translating posts, including titles, content, images, and meta fields, this plugin helps you efficiently manage multilingual websites. Compatible with Gutenberg and popular third-party blocks, it preserves all styles and formats, ensuring a consistent look across languages. 
 
-Check out our [Automatic Translate Addon For TranslatePress](https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=check_out)
+Check out our [Automatic Translate Addon For TranslatePress](https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=check_out)
 
-Check out our [Automatic Translate Addon For TranslatePress](https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=check_out) helps you to translate entire page content with one click. You don’t need to translate page content manually one by one.
+Check out our [Automatic Translate Addon For TranslatePress](https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=check_out) helps you to translate entire page content with one click. You don’t need to translate page content manually one by one.
 
 
 
@@ -150,9 +150,9 @@ All automatic translations will be machine translations, powered by third-party 
 
 = Can this plugin automatically translate page content ❔ =
  No, this plugin only translates plugins and themes strings automatically. To translate page content automatically, you can try the 
-[Automatic Translate Addon For TranslatePress](https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=check_out)
+[Automatic Translate Addon For TranslatePress](https://coolplugins.net/product/automatic-translate-addon-for-translatepress-pro/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=get_pro&utm_content=check_out)
 Or
-[Automatic Translations For Polylang](https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=catl_plugin&utm_medium=readme&utm_campaign=cross_promotion&utm_content=check_out)
+[Automatic Translations For Polylang](https://coolplugins.net/product/automatic-translations-for-polylang/?utm_source=latlt_plugin&utm_medium=readme&utm_campaign=cross_promotion&utm_content=check_out)
 
 = How it works❔ =
 This plugin works as an add-on for **Loco Translate** official plugin. First, you need to install and activate the free version of "Loco Translate" then install this addon and use one-click machine translations (supported by Yandex Translate Widget).

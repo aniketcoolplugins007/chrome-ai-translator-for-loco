@@ -21,7 +21,7 @@
   border-radius: 0 0 4px 4px;
 }
 
-#catl-dialog .catl-heading{
+#latlt-dialog .latlt-heading{
   margin-bottom: 10px;
   display: inline-block;
 }
@@ -39,7 +39,7 @@ span.beta-button {
 }
 
 /* Modal Styles */
-.catl_custom_model {
+.latlt_custom_model {
   display: none;
   position: fixed;
   z-index: 99999;
@@ -50,7 +50,7 @@ span.beta-button {
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-.catl_custom_model .modal-content {
+.latlt_custom_model .modal-content {
   position: relative;
   background-color: #fefefe;
   width: 80%;
@@ -77,7 +77,7 @@ span.beta-button {
 }
 
 /* Header Styles */
-.catl_custom_model .modal-header {
+.latlt_custom_model .modal-header {
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -87,7 +87,7 @@ span.beta-button {
   position: relative;
 }
 
-.catl_custom_model .modal-header h2 {
+.latlt_custom_model .modal-header h2 {
   display: inline-block;
   font-size: 1.2rem;
   color: #fff;
@@ -96,7 +96,7 @@ span.beta-button {
 }
 
 /* The Close Button */
-.catl_custom_model .modal-header .close {
+.latlt_custom_model .modal-header .close {
   color: white;
   font-size: 28px;
   font-weight: bold;
@@ -105,15 +105,15 @@ span.beta-button {
   top: 20px;
 }
 
-.catl_custom_model .modal-header .close:hover,
-.catl_custom_model .modal-header .close:focus {
+.latlt_custom_model .modal-header .close:hover,
+.latlt_custom_model .modal-header .close:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
 }
 
 /* Action Buttons */
-.catl_custom_model .catl_actions {
+.latlt_custom_model .latlt_actions {
   margin: 8px;
   position: absolute;
   top: 10px;
@@ -131,31 +131,31 @@ span.beta-button {
 }
 
 /* Statistics Styles */
-.catl_custom_model .catl_stats {
+.latlt_custom_model .latlt_stats {
   padding: 0;
   margin: 5px 160px 5px 0;
   width: calc(100% - 160px);
 }
 
-.catl_custom_model .modal-footer .catl_stats {
+.latlt_custom_model .modal-footer .latlt_stats {
   margin: 22px 160px 5px 0;
 }
 
-.catl_custom_model .catl_stats a {
+.latlt_custom_model .latlt_stats a {
   color: #fff936;
 }
 
 /* Modal Body Styles */
-.catl_custom_model .modal-body {
+.latlt_custom_model .modal-body {
   padding: 2px 16px;
   position: relative;
 }
 
-.catl_custom_model .notice-dismiss {
+.latlt_custom_model .notice-dismiss {
   padding: 0;
 }
 
-.catl_custom_model h3 {
+.latlt_custom_model h3 {
   width: 100%;
   display: inline-block;
   font-size: 22px;
@@ -169,7 +169,7 @@ span.beta-button {
 }
 
 /* String Container Styles */
-#chrome-ai-translator-model.catl_custom_model .catl_string_container {
+#chrome-ai-translator-model.latlt_custom_model .latlt_string_container {
   overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - 410px);
@@ -178,7 +178,7 @@ span.beta-button {
 }
 
 /* Table Styles */
-.catl_custom_model table {
+.latlt_custom_model table {
   border-spacing: 0;
   border-collapse: collapse;
   width: 100%;
@@ -188,14 +188,14 @@ span.beta-button {
   margin: 0;
 }
 
-.catl_custom_model table td:first-child,
-.catl_custom_model table th:first-child {
+.latlt_custom_model table td:first-child,
+.latlt_custom_model table th:first-child {
   width: 60px;
   text-align: center;
 }
 
-.catl_custom_model table td,
-.catl_custom_model table th {
+.latlt_custom_model table td,
+.latlt_custom_model table th {
   border: 1px solid #ddd;
   padding: 4px;
   height: 26px;
@@ -208,7 +208,7 @@ span.beta-button {
 }
 
 /* Translate Progress Styles */
-.catl_custom_model .catl_translate_progress {
+.latlt_custom_model .latlt_translate_progress {
   position: absolute;
   display: none;
   top: 0;
@@ -227,7 +227,7 @@ span.beta-button {
   padding-top: 30px;
 }
 
-.catl_custom_model .modal-footer {
+.latlt_custom_model .modal-footer {
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -291,7 +291,7 @@ html.merge-translations:before {
   background-color: #135e96;
 }
 
-#catl_chromeAI_btn ~ a{
+#latlt_chromeAI_btn ~ a{
   margin-top: .5rem;
   text-decoration: none;
   font-size: 1.1rem;
@@ -301,31 +301,31 @@ html.merge-translations:before {
   align-items: center;
 }
 
-#catl_chromeAI_btn ~ a img{
+#latlt_chromeAI_btn ~ a img{
   margin-inline: .2rem;
 }
 
-#catl_chromeAI_btn ~ a:focus{
+#latlt_chromeAI_btn ~ a:focus{
   border: 0px;
   outline: none;
   box-shadow: none;
 }
 
 @media screen and (max-width: 769px) {
-  .catl_custom_model .catl_string_container {
+  .latlt_custom_model .latlt_string_container {
     height: calc(100vh - 570px);
   }
 
-  .catl_custom_model .modal-header h2 {
+  .latlt_custom_model .modal-header h2 {
     margin-bottom: 0px;
   }
 
-  .catl_custom_model .catl_save_strings {
+  .latlt_custom_model .latlt_save_strings {
     line-height: 20px;
     min-height: 30px !important;
   }
 
-  .modal-header .catl_stats{
+  .modal-header .latlt_stats{
     margin: 5px 160px 5px 0 !important;
   }
 }
@@ -335,25 +335,25 @@ html.merge-translations:before {
     font-size: 15px;
     line-height: 2.5;
   }
-  .modal-header .catl_stats{
+  .modal-header .latlt_stats{
     margin: -12px 160px 5px 0;
   }
 }
 
 /* For RTL dailog */
-div.ui-dialog[aria-describedby="catl-dialog"].catl-rtl{
+div.ui-dialog[aria-describedby="latlt-dialog"].latlt-rtl{
   left: 50% !important;
   top: 50%!important;
   transform: translate(-50%, -50%);
   right: auto;
 }
 
-.catl_custom_model.catl-rtl .catl_actions{
+.latlt_custom_model.latlt-rtl .latlt_actions{
   right: auto;
   left: 40px;
   }
   
-.catl_custom_model.catl-rtl .modal-header .close{
+.latlt_custom_model.latlt-rtl .modal-header .close{
   right: auto;
   left: 10px;
   } 
