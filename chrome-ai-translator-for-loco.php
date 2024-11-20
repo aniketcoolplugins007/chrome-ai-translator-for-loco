@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Chrome built-in AI Translator for Loco Translate
-Description: Chrome built-in AI Translator for Loco Translate to translate your website content into any language.
+Plugin Name: Chrome AI Translator for Loco Translate
+Description: Chrome AI Translator for Loco Translate to translate your website content into any language.
 Version: 2.4.5
 License: GPL2
-Text Domain: chrome-ai-translator-for-loco
+Text Domain: chrome-ai-translator-for-loco-translate
 Domain Path: languages
 Author: Cool Plugins
 Author URI: https://coolplugins.net/
@@ -14,25 +14,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-define( 'ATLT_FILE', __FILE__ );
-define( 'ATLT_URL', plugin_dir_url( ATLT_FILE ) );
-define( 'ATLT_PATH', plugin_dir_path( ATLT_FILE ) );
-define( 'ATLT_VERSION', '2.4.5' );
+define( 'CATL_FILE', __FILE__ );
+define( 'CATL_URL', plugin_dir_url( CATL_FILE ) );
+define( 'CATL_PATH', plugin_dir_path( CATL_FILE ) );
+define( 'CATL_VERSION', '2.4.5' );
 
 /**
- * @package Chrome built-in AI Translator for Loco Translate
+ * @package Chrome AI Translator for Loco Translate
  * @version 2.4
  */
 
-if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
+if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 
 	/** Singleton ************************************/
-	final class LocoAutoTranslateAddon {
+	final class ChromeAITranslatorForLoco {
 
 		/**
 		 * The unique instance of the plugin.
 		 *
-		 * @var LocoAutoTranslateAddon
+		 * @var ChromeAITranslatorForLoco
 		 */
 		private static $instance;
 
@@ -55,22 +55,22 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		 */
 		public static function register() {
 			$thisPlugin = self::$instance;
-			register_activation_hook( ATLT_FILE, array( $thisPlugin, 'atlt_activate' ) );
-			register_deactivation_hook( ATLT_FILE, array( $thisPlugin, 'atlt_deactivate' ) );
+			register_activation_hook( CATL_FILE, array( $thisPlugin, 'catl_activate' ) );
+			register_deactivation_hook( CATL_FILE, array( $thisPlugin, 'catl_deactivate' ) );
 
 			// run actions and filter only at admin end.
 			if ( is_admin() ) {
-				add_action( 'plugins_loaded', array( $thisPlugin, 'atlt_check_required_loco_plugin' ) );
+				add_action( 'plugins_loaded', array( $thisPlugin, 'catl_check_required_loco_plugin' ) );
 				// add notice to use latest loco translate addon
-				add_action( 'init', array( $thisPlugin, 'atlt_verify_loco_version' ) );
+				add_action( 'init', array( $thisPlugin, 'catl_verify_loco_version' ) );
 
 				add_action( 'init', array( $thisPlugin, 'onInit' ) );
 
-				add_action( 'admin_enqueue_scripts', array( $thisPlugin, 'atlt_enqueue_scripts' ) );
+				add_action( 'admin_enqueue_scripts', array( $thisPlugin, 'catl_enqueue_scripts' ) );
 
 				/* since version 2.1 */
-				add_filter( 'loco_api_providers', array( $thisPlugin, 'atlt_register_api' ), 10, 1 );
-				add_action( 'loco_api_ajax', array( $thisPlugin, 'atlt_ajax_init' ), 0, 0 );
+				add_filter( 'loco_api_providers', array( $thisPlugin, 'catl_register_api' ), 10, 1 );
+				add_action( 'loco_api_ajax', array( $thisPlugin, 'catl_ajax_init' ), 0, 0 );
 				add_action( 'wp_ajax_save_all_translations', array( $thisPlugin, 'save_translations_handler' ) );
 			}
 		}
@@ -80,7 +80,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		| Register API Manager inside Loco Translate Plugin
 		|----------------------------------------------------------------------
 		*/
-		function atlt_register_api( array $apis ) {
+		function catl_register_api( array $apis ) {
 			$apis[] = array(
 				'id'   => 'loco_auto',
 				'key'  => '122343',
@@ -95,7 +95,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		| Auto Translate Request handler
 		|----------------------------------------------------------------------
 		*/
-		function atlt_ajax_init() {
+		function catl_ajax_init() {
 			 add_filter( 'loco_api_translate_loco_auto', array( self::$instance, 'loco_auto_translator_process_batch' ), 0, 3 );
 		}
 
@@ -110,7 +110,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		function loco_auto_translator_process_batch( array $sources, Loco_Locale $Locale, array $config ) {
 			$targets = array();
 			// Extract domain from the referrer URL
-			$url_data   = self::$instance->atlt_parse_query( $_SERVER['HTTP_REFERER'] );
+			$url_data   = self::$instance->catl_parse_query( $_SERVER['HTTP_REFERER'] );
 			$domain     = isset( $url_data['domain'] ) && ! empty( $url_data['domain'] ) ? sanitize_text_field( $url_data['domain'] ) : 'temp';
 			$lang       = sanitize_text_field( $Locale->lang );
 			$region     = sanitize_text_field( $Locale->region );
@@ -142,7 +142,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 			}
 		}
 
-		function atlt_parse_query( $var ) {
+		function catl_parse_query( $var ) {
 			/**
 			 *  Use this function to parse out the query array element from
 			 *  the output of parse_url().
@@ -211,19 +211,19 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		| also register the plugin text domain
 		|----------------------------------------------------------------------
 		*/
-		public function atlt_check_required_loco_plugin() {
+		public function catl_check_required_loco_plugin() {
 			if ( ! function_exists( 'loco_plugin_self' ) ) {
-				add_action( 'admin_notices', array( self::$instance, 'atlt_plugin_required_admin_notice' ) );
+				add_action( 'admin_notices', array( self::$instance, 'catl_plugin_required_admin_notice' ) );
 			}
 			// load language files
-			load_plugin_textdomain( 'loco-auto-translate', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+			load_plugin_textdomain( 'chrome-ai-translator-for-loco', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 		}
 		/*
 		|----------------------------------------------------------------------
 		| Notice to 'Admin' if "Loco Translate" is not active
 		|----------------------------------------------------------------------
 		*/
-		public function atlt_plugin_required_admin_notice() {
+		public function catl_plugin_required_admin_notice() {
 			if ( current_user_can( 'activate_plugins' ) ) {
 				$url         = 'plugin-install.php?tab=plugin-information&plugin=loco-translate&TB_iframe=true';
 				$title       = 'Loco Translate';
@@ -232,7 +232,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 				sprintf(
 					__(
 						'In order to use <strong>%1$s</strong> plugin, please install and activate the latest version  of <a href="%2$s" class="thickbox" title="%3$s">%4$s</a>',
-						'automatic-translator-addon-for-loco-translate'
+						'chrome-ai-translator-for-loco-translate'
 					),
 					esc_attr( $plugin_info['Name'] ),
 					esc_url( $url ),
@@ -249,7 +249,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		| check User Status
 		|----------------------------------------------------------------------
 		*/
-		public function atlt_verify_loco_version() {
+		public function catl_verify_loco_version() {
 			if ( function_exists( 'loco_plugin_version' ) ) {
 				$locoV = loco_plugin_version();
 				if ( version_compare( $locoV, '2.4.0', '<' ) ) {
@@ -271,7 +271,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 				sprintf(
 					__(
 						'In order to use <strong>%1$s</strong> (version <strong>%2$s</strong>), Please update <a href="%3$s" class="thickbox" title="%4$s">%5$s</a> official plugin to a latest version (2.4.0 or upper)',
-						'automatic-translator-addon-for-loco-translate'
+						'chrome-ai-translator-for-loco-translate'
 					),
 					esc_attr( $plugin_info['Name'] ),
 					esc_attr( $plugin_info['Version'] ),
@@ -288,16 +288,16 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		|  Enqueue required JS file
 		|------------------------------------------------------------------------
 		*/
-		function atlt_enqueue_scripts( $hook ) {
+		function catl_enqueue_scripts( $hook ) {
 			// load assets only on editor page
 			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'file-edit' ) {
-				wp_register_script( 'loco-addon-custom', ATLT_URL . 'assets/js/common.min.js', array( 'loco-translate-admin' ), ATLT_VERSION, true );
-				wp_register_script( 'chrome-ai-translator-for-loco', ATLT_URL . 'assets/js/chrome-ai-translator.min.js', array( 'loco-addon-custom' ), ATLT_VERSION, true );
+				wp_register_script( 'loco-addon-custom', CATL_URL . 'assets/js/common.min.js', array( 'loco-translate-admin' ), CATL_VERSION, true );
+				wp_register_script( 'chrome-ai-translator-for-loco', CATL_URL . 'assets/js/chrome-ai-translator.min.js', array( 'loco-addon-custom' ), CATL_VERSION, true );
 				wp_register_style(
 					'loco-addon-custom-css',
-					ATLT_URL . 'assets/css/custom.min.css',
+					CATL_URL . 'assets/css/custom.min.css',
 					null,
-					ATLT_VERSION,
+					CATL_VERSION,
 					'all'
 				);
 
@@ -307,10 +307,10 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 
 				$extraData['ajax_url']        = admin_url( 'admin-ajax.php' );
 				$extraData['nonce']           = wp_create_nonce( 'loco-addon-nonces' );
-				$extraData['ATLT_URL']        = ATLT_URL;
+				$extraData['CATL_URL']        = CATL_URL;
 				$extraData['preloader_path']  = 'preloader.gif';
-				$extraData['gt_preview']      = 'powered-by-google.png';
-				$extraData['extra_class']     = is_rtl() ? 'atlt-rtl' : '';
+				$extraData['chrome_ai_preview']      = 'chrome-ai-translator.png';
+				$extraData['extra_class']     = is_rtl() ? 'catl-rtl' : '';
 
 				$extraData['loco_settings_url'] = admin_url( 'admin.php?page=loco-config&action=apis' );
 
@@ -337,22 +337,22 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 				apply_filters( 'active_plugins', get_option( 'active_plugins' ) )
 			) ) {
 
-				if ( get_option( 'atlt-pro-version' ) != false &&
-				  version_compare( get_option( 'atlt-pro-version' ), '1.4', '<' ) ) {
+				if ( get_option( 'catl-pro-version' ) != false &&
+				  version_compare( get_option( 'catl-pro-version' ), '1.4', '<' ) ) {
 
-					  add_action( 'admin_notices', array( self::$instance, 'atlt_use_pro_latest_version' ) );
+					  add_action( 'admin_notices', array( self::$instance, 'catl_use_pro_latest_version' ) );
 				} else {
-					add_action( 'admin_notices', array( self::$instance, 'atlt_pro_already_active_notice' ) );
+					add_action( 'admin_notices', array( self::$instance, 'catl_pro_already_active_notice' ) );
 					return;
 				}
 			}
 		}
 
-		public function atlt_pro_already_active_notice() {
+		public function catl_pro_already_active_notice() {
 			echo '<div class="error loco-pro-missing" style="border:2px solid;border-color:#dc3232;"><p><strong>Loco Automatic Translate Addon Pro</strong> is already active so no need to activate free anymore.</p> </div>';
 		}
 
-		public function atlt_use_pro_latest_version() {
+		public function catl_use_pro_latest_version() {
 			echo '<div class="error loco-pro-missing" style="border:2px solid;border-color:#dc3232;"><p><strong>Please use <strong>Loco Automatic Translate Addon Pro</strong> latest version 1.4 or higher to use auto translate premium features.</p> </div>';
 		}
 
@@ -361,11 +361,11 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		|    Plugin activation
 		|------------------------------------------------------
 		*/
-		public function atlt_activate() {
-			update_option( 'atlt-version', ATLT_VERSION );
-			update_option( 'atlt-installDate', gmdate( 'Y-m-d h:i:s' ) );
-			update_option( 'atlt-already-rated', 'no' );
-			update_option( 'atlt-type', 'free' );
+		public function catl_activate() {
+			update_option( 'catl-version', CATL_VERSION );
+			update_option( 'catl-installDate', gmdate( 'Y-m-d h:i:s' ) );
+			update_option( 'catl-already-rated', 'no' );
+			update_option( 'catl-type', 'free' );
 		}
 
 		/*
@@ -373,11 +373,11 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		|    Plugin deactivation
 		|-------------------------------------------------------
 		*/
-		public function atlt_deactivate() {
-			delete_option( 'atlt-version' );
-			delete_option( 'atlt-installDate' );
-			delete_option( 'atlt-already-rated' );
-			delete_option( 'atlt-type' );
+		public function catl_deactivate() {
+			delete_option( 'catl-version' );
+			delete_option( 'catl-installDate' );
+			delete_option( 'catl-already-rated' );
+			delete_option( 'catl-type' );
 		}
 
 		/**
@@ -388,7 +388,7 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		 */
 		public function __clone() {
 			// Cloning instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'loco-auto-translate' ), '2.3' );
+			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'chrome-ai-translator-for-loco-translate' ), '2.3' );
 		}
 
 		/**
@@ -396,15 +396,13 @@ if ( ! class_exists( 'LocoAutoTranslateAddon' ) ) {
 		 */
 		public function __wakeup() {
 			// Unserializing instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'loco-auto-translate' ), '2.3' );
+			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'chrome-ai-translator-for-loco-translate' ), '2.3' );
 		}
 
 	}
 
-	function ATLT() {
-		return LocoAutoTranslateAddon::get_instance();
+	function CATL() {
+		return ChromeAITranslatorForLoco::get_instance();
 	}
-	ATLT();
-
+	CATL();
 }
-

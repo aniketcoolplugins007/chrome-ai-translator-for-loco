@@ -1,7 +1,7 @@
 ((window, $) => {
     // Get Loco Translate global object and plugin configuration object.
     const { locoConf } = window;
-    const { ajax_url: ajaxUrl, nonce, ATLT_URL, extra_class: rtlClass } = window.extradata;
+    const { ajax_url: ajaxUrl, nonce, CATL_URL, extra_class: rtlClass } = window.extradata;
 
     const initialize = async () => {
         const langSupported = await checkChromeAILangStatus();
@@ -48,7 +48,7 @@
         settingsModel();
         $("#cool-auto-translate-btn").on("click", openSettingsModel);
         $("button.icon-robot[data-loco='auto']").on("click", onAutoTranslateClick);
-        $(".atlt_save_strings").on("click", onSaveClick);
+        $(".catl_save_strings").on("click", onSaveClick);
     };
 
     const addStringsInModal = (allStrings) => {
@@ -60,7 +60,7 @@
             $(".notice-container")
                 .addClass('notice inline notice-warning')
                 .html("There is no plain string available for translations.");
-            $(".atlt_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
+            $(".catl_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
         }
     };
 
@@ -80,7 +80,7 @@
         };
         const regex = /(\%\s*\d+\s*\$?\s*[a-z0-9])/gi;
 
-        $(".atlt_strings_table tbody tr").each(function () {
+        $(".catl_strings_table tbody tr").each(function () {
             const source = $(this).find("td.source").text();
             const target = $(this).find("td.target").text();
             const improvedTarget = strtr(target, rpl).replace(regex, match => match.replace(/\s/g, '').toLowerCase());
@@ -89,9 +89,9 @@
             translatedObj.push({ source: improvedSource, target: improvedTarget });
         });
 
-        const projectId = $(this).parents(".atlt_custom_model").find("#project_id").val();
+        const projectId = $(this).parents(".catl_custom_model").find("#project_id").val();
         saveTranslatedStrings(translatedObj, projectId);
-        $(".atlt_custom_model").fadeOut("slow");
+        $(".catl_custom_model").fadeOut("slow");
         $("html").addClass("merge-translations");
         updateLocoModel();
     };
@@ -247,7 +247,7 @@
     };
 
     const openSettingsModel = () => {
-        $("#atlt-dialog").dialog({
+        $("#catl-dialog").dialog({
             dialogClass: rtlClass,
             resizable: false,
             height: "auto",
@@ -263,13 +263,13 @@
 
     const stringModalEvents = () => {
         $(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#atlt-dialog")) {
-                $(".atlt_custom_model").hide();
+            if (!event.target.closest(".modal-content") && !event.target.closest("#catl-dialog")) {
+                $(".catl_custom_model").hide();
             }
         });
     
-        $(".atlt_custom_model").find(".close").on("click", () => {
-            $(".atlt_custom_model").fadeOut("slow");
+        $(".catl_custom_model").find(".close").on("click", () => {
+            $(".catl_custom_model").fadeOut("slow");
         });
     };
 
@@ -298,23 +298,23 @@
                     }
                 }
             }
-            $(".atlt_stats").each(function () {
+            $(".catl_stats").each(function () {
                 $(this).find(".totalChars").html(totalTChars);
             });
         }
 
-        $(".atlt_strings_table > tbody.atlt_strings_body").html(html);
+        $(".catl_strings_table > tbody.catl_strings_body").html(html);
     };
 
     const settingsModel = () => {
-        const chromeAiPreviewImg = `${ATLT_URL}assets/images/${window.extradata['chrome_ai_preview']}`;
+        const chromeAiPreviewImg = `${CATL_URL}assets/images/${window.extradata['chrome_ai_preview']}`;
        
         const modelHTML = `
-            <div id="atlt-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
-                <div class="atlt-settings">
-                     <strong class="atlt-heading">Translate Using Chrome AI Translator</strong>
+            <div id="catl-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
+                <div class="catl-settings">
+                     <strong class="catl-heading">Translate Using Chrome AI Translator</strong>
                     <div class="inputGroup">
-                       <button id="atlt_chromeAI_btn" class="button button-primary">Chrome AI Translator</button>
+                       <button id="catl_chromeAI_btn" class="button button-primary">Chrome AI Translator</button>
                         <br/><a href="https://translate.google.com/" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
                     </div>
                 </div>
@@ -327,7 +327,7 @@
     const createStringsModal = (projectId, widgetType) => {
         const { wrapperCls, headerCls, bodyCls, footerCls, wrapperId } = getWidgetClasses(widgetType);
         const modelHTML = `
-            <div id="${wrapperId}" class="modal atlt_custom_model ${wrapperCls}${rtlClass ? ` ${rtlClass}` : ''}">
+            <div id="${wrapperId}" class="modal catl_custom_model ${wrapperCls}${rtlClass ? ` ${rtlClass}` : ''}">
                 <div class="modal-content">
                     <input type="hidden" id="project_id" value="${projectId}"> 
                     ${modelHeaderHTML(widgetType, headerCls)}   
@@ -349,20 +349,20 @@
 
     const modelBodyHTML = (widgetType, bodyCls) => `
         <div class="modal-body ${bodyCls}">
-            <div class="atlt_translate_progress">
+            <div class="catl_translate_progress">
                 Automatic translation is in progress....<br/>
                 It will take a few minutes, enjoy ☕ coffee in this time!<br/><br/>
                 Please do not leave this window or browser tab while the translation is in progress...
             </div>
             ${translatorWidget(widgetType)}
-            <div class="atlt_string_container">
-                <table class="scrolldown atlt_strings_table">
+            <div class="catl_string_container">
+                <table class="scrolldown catl_strings_table">
                     <thead>
                         <th>S.No</th>
                         <th>Source Text</th>
                         <th>Translation</th>
                     </thead>
-                    <tbody class="atlt_strings_body"></tbody>
+                    <tbody class="catl_strings_body"></tbody>
                 </table>
             </div>
             <div class="notice-container"></div>
@@ -372,10 +372,10 @@
         <div class="modal-header ${headerCls}">
             <span class="close">&times;</span>
             <h2>Step 2 - Start Automatic Translation Process</h2>
-            <div class="atlt_actions">
-                <button class="atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
+            <div class="catl_actions">
+                <button class="catl_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
-            <div style="display:none" class="atlt_stats hidden">
+            <div style="display:none" class="catl_stats hidden">
                 Wahooo! You have saved your valuable time via auto translating 
                 <strong class="totalChars"></strong> characters using 
                 <strong>
@@ -396,10 +396,10 @@
 
     const modelFooterHTML = (widgetType, footerCls) => `
         <div class="modal-footer ${footerCls}">
-            <div class="atlt_actions">
-                <button class="atlt_save_strings button button-primary" disabled="true">Merge Translation</button>
+            <div class="catl_actions">
+                <button class="catl_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
-            <div style="display:none" class="atlt_stats">
+            <div style="display:none" class="catl_stats">
                 Wahooo! You have saved your valuable time via auto translating 
                 <strong class="totalChars"></strong> characters using 
                 <strong>

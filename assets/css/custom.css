@@ -21,7 +21,7 @@
   border-radius: 0 0 4px 4px;
 }
 
-#atlt-dialog .atlt-heading{
+#catl-dialog .catl-heading{
   margin-bottom: 10px;
   display: inline-block;
 }
@@ -39,7 +39,7 @@ span.beta-button {
 }
 
 /* Modal Styles */
-.atlt_custom_model {
+.catl_custom_model {
   display: none;
   position: fixed;
   z-index: 99999;
@@ -50,7 +50,7 @@ span.beta-button {
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-.atlt_custom_model .modal-content {
+.catl_custom_model .modal-content {
   position: relative;
   background-color: #fefefe;
   width: 80%;
@@ -77,7 +77,7 @@ span.beta-button {
 }
 
 /* Header Styles */
-.atlt_custom_model .modal-header {
+.catl_custom_model .modal-header {
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -87,7 +87,7 @@ span.beta-button {
   position: relative;
 }
 
-.atlt_custom_model .modal-header h2 {
+.catl_custom_model .modal-header h2 {
   display: inline-block;
   font-size: 1.2rem;
   color: #fff;
@@ -96,7 +96,7 @@ span.beta-button {
 }
 
 /* The Close Button */
-.atlt_custom_model .modal-header .close {
+.catl_custom_model .modal-header .close {
   color: white;
   font-size: 28px;
   font-weight: bold;
@@ -105,15 +105,15 @@ span.beta-button {
   top: 20px;
 }
 
-.atlt_custom_model .modal-header .close:hover,
-.atlt_custom_model .modal-header .close:focus {
+.catl_custom_model .modal-header .close:hover,
+.catl_custom_model .modal-header .close:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
 }
 
 /* Action Buttons */
-.atlt_custom_model .atlt_actions {
+.catl_custom_model .catl_actions {
   margin: 8px;
   position: absolute;
   top: 10px;
@@ -131,31 +131,31 @@ span.beta-button {
 }
 
 /* Statistics Styles */
-.atlt_custom_model .atlt_stats {
+.catl_custom_model .catl_stats {
   padding: 0;
   margin: 5px 160px 5px 0;
   width: calc(100% - 160px);
 }
 
-.atlt_custom_model .modal-footer .atlt_stats {
+.catl_custom_model .modal-footer .catl_stats {
   margin: 22px 160px 5px 0;
 }
 
-.atlt_custom_model .atlt_stats a {
+.catl_custom_model .catl_stats a {
   color: #fff936;
 }
 
 /* Modal Body Styles */
-.atlt_custom_model .modal-body {
+.catl_custom_model .modal-body {
   padding: 2px 16px;
   position: relative;
 }
 
-.atlt_custom_model .notice-dismiss {
+.catl_custom_model .notice-dismiss {
   padding: 0;
 }
 
-.atlt_custom_model h3 {
+.catl_custom_model h3 {
   width: 100%;
   display: inline-block;
   font-size: 22px;
@@ -169,7 +169,7 @@ span.beta-button {
 }
 
 /* String Container Styles */
-#chrome-ai-translator-model.atlt_custom_model .atlt_string_container {
+#chrome-ai-translator-model.catl_custom_model .catl_string_container {
   overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - 410px);
@@ -178,7 +178,7 @@ span.beta-button {
 }
 
 /* Table Styles */
-.atlt_custom_model table {
+.catl_custom_model table {
   border-spacing: 0;
   border-collapse: collapse;
   width: 100%;
@@ -188,14 +188,14 @@ span.beta-button {
   margin: 0;
 }
 
-.atlt_custom_model table td:first-child,
-.atlt_custom_model table th:first-child {
+.catl_custom_model table td:first-child,
+.catl_custom_model table th:first-child {
   width: 60px;
   text-align: center;
 }
 
-.atlt_custom_model table td,
-.atlt_custom_model table th {
+.catl_custom_model table td,
+.catl_custom_model table th {
   border: 1px solid #ddd;
   padding: 4px;
   height: 26px;
@@ -208,7 +208,7 @@ span.beta-button {
 }
 
 /* Translate Progress Styles */
-.atlt_custom_model .atlt_translate_progress {
+.catl_custom_model .catl_translate_progress {
   position: absolute;
   display: none;
   top: 0;
@@ -227,7 +227,7 @@ span.beta-button {
   padding-top: 30px;
 }
 
-.atlt_custom_model .modal-footer {
+.catl_custom_model .modal-footer {
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -291,7 +291,7 @@ html.merge-translations:before {
   background-color: #135e96;
 }
 
-#atlt_chromeAI_btn ~ a{
+#catl_chromeAI_btn ~ a{
   margin-top: .5rem;
   text-decoration: none;
   font-size: 1.1rem;
@@ -301,31 +301,31 @@ html.merge-translations:before {
   align-items: center;
 }
 
-#atlt_chromeAI_btn ~ a img{
+#catl_chromeAI_btn ~ a img{
   margin-inline: .2rem;
 }
 
-#atlt_chromeAI_btn ~ a:focus{
+#catl_chromeAI_btn ~ a:focus{
   border: 0px;
   outline: none;
   box-shadow: none;
 }
 
 @media screen and (max-width: 769px) {
-  .atlt_custom_model .atlt_string_container {
+  .catl_custom_model .catl_string_container {
     height: calc(100vh - 570px);
   }
 
-  .atlt_custom_model .modal-header h2 {
+  .catl_custom_model .modal-header h2 {
     margin-bottom: 0px;
   }
 
-  .atlt_custom_model .atlt_save_strings {
+  .catl_custom_model .catl_save_strings {
     line-height: 20px;
     min-height: 30px !important;
   }
 
-  .modal-header .atlt_stats{
+  .modal-header .catl_stats{
     margin: 5px 160px 5px 0 !important;
   }
 }
@@ -335,25 +335,25 @@ html.merge-translations:before {
     font-size: 15px;
     line-height: 2.5;
   }
-  .modal-header .atlt_stats{
+  .modal-header .catl_stats{
     margin: -12px 160px 5px 0;
   }
 }
 
 /* For RTL dailog */
-div.ui-dialog[aria-describedby="atlt-dialog"].atlt-rtl{
+div.ui-dialog[aria-describedby="catl-dialog"].catl-rtl{
   left: 50% !important;
   top: 50%!important;
   transform: translate(-50%, -50%);
   right: auto;
 }
 
-.atlt_custom_model.atlt-rtl .atlt_actions{
+.catl_custom_model.catl-rtl .catl_actions{
   right: auto;
   left: 40px;
   }
   
-.atlt_custom_model.atlt-rtl .modal-header .close{
+.catl_custom_model.catl-rtl .modal-header .close{
   right: auto;
   left: 10px;
   } 

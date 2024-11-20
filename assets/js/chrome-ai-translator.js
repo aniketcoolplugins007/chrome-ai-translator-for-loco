@@ -4,17 +4,17 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
 
         if(languageSupported === "after-download") {
             const link = jQuery('<br><span>Install the language pack. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>');
-            jQuery("#atlt_chromeAI_btn").after(link);
+            jQuery("#catl_chromeAI_btn").after(link);
         }
 
         if(languageSupported !== 'readily') {
-            jQuery("#atlt_chromeAI_btn").attr("disabled", true);
+            jQuery("#catl_chromeAI_btn").attr("disabled", true);
             return;
         }
 
         this.translateStatus = false;
         this.completedTranslateIndex = 0;
-        jQuery(document).on("click", "#atlt_chromeAI_btn", openStringsModal);
+        jQuery(document).on("click", "#catl_chromeAI_btn", openStringsModal);
     };
 
     const langStatus = async () => {
@@ -34,14 +34,14 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
 
     const openStringsModal = (e) => {
         const modelContainer = jQuery('div#chrome-ai-translator-model.chrome-ai-translator-container');
-        modelContainer.find(".atlt_actions > .atlt_save_strings").prop("disabled", true);
-        modelContainer.find(".atlt_stats").hide();
+        modelContainer.find(".catl_actions > .catl_save_strings").prop("disabled", true);
+        modelContainer.find(".catl_stats").hide();
         localStorage.setItem("lang", this.defaultLang);
 
         if (!isLanguageSupported(this.defaultLang)) {
             showUnsupportedLanguageMessage(modelContainer);
         } else {
-            jQuery("#atlt-dialog").dialog("close");
+            jQuery("#catl-dialog").dialog("close");
             modelContainer.fadeIn("slow");
         }
 
@@ -84,11 +84,11 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
     };
 
     const showUnsupportedLanguageMessage = (modelContainer) => {
-        jQuery("#atlt-dialog").dialog("close");
+        jQuery("#catl-dialog").dialog("close");
         modelContainer.find(".notice-container")
             .addClass('notice inline notice-warning')
             .html("Chrome AI Translator does not support this language.");
-        modelContainer.find(".atlt_string_container, .choose-lang, .atlt_save_strings, #ytWidget, .translator-widget, .notice-info, .is-dismissible").hide();
+        modelContainer.find(".catl_string_container, .choose-lang, .catl_save_strings, #ytWidget, .translator-widget, .notice-info, .is-dismissible").hide();
         modelContainer.fadeIn("slow");
     };
 
@@ -96,7 +96,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         const langCode = this.defaultLang;
         this.translateStatus = true;
         this.translateStringEle = jQuery("#chrome-ai-translator-model .chrome-ai-translator-body table tbody tr td.target.translate");
-        this.stringContainer = jQuery("#chrome-ai-translator-model .modal-content .atlt_string_container");
+        this.stringContainer = jQuery("#chrome-ai-translator-model .modal-content .catl_string_container");
 
         this.translator = await self.translation.createTranslator({
             sourceLanguage: 'en',
@@ -130,13 +130,13 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         ele.innerText = translatedString;
 
         if (this.translateStringEle.length > index + 1 && stringContainer[0].scrollHeight > 100) {
-            jQuery("#chrome-ai-translator-model .atlt_translate_progress").fadeIn("slow");
+            jQuery("#chrome-ai-translator-model .catl_translate_progress").fadeIn("slow");
             await stringTranslation(this.completedTranslateIndex + 1);
         } else {
             this.translateBtn.prop("disabled", true);
-            jQuery("#chrome-ai-translator-model .atlt_save_strings").prop("disabled", false);
-            jQuery("#chrome-ai-translator-model .atlt_translate_progress").fadeOut("slow");
-            jQuery("#chrome-ai-translator-model .atlt_stats").fadeIn("slow");
+            jQuery("#chrome-ai-translator-model .catl_save_strings").prop("disabled", false);
+            jQuery("#chrome-ai-translator-model .catl_translate_progress").fadeOut("slow");
+            jQuery("#chrome-ai-translator-model .catl_stats").fadeIn("slow");
         }
     };
 
