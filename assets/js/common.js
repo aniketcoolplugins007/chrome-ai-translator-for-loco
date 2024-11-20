@@ -6,10 +6,10 @@
     const initialize = async () => {
         const langSupported = await checkChromeAILangStatus();
 
-        console.log(langSupported);
         if(langSupported === "readily") {
             onLoad();
         }
+
         setupEventListeners();
     };
 
@@ -267,14 +267,11 @@
                 $(".atlt_custom_model").hide();
             }
         });
-
     
         $(".atlt_custom_model").find(".close").on("click", () => {
             $(".atlt_custom_model").fadeOut("slow");
         });
     };
-
-
 
     const encodeHtmlEntity = (str) => {
         var buf = [];

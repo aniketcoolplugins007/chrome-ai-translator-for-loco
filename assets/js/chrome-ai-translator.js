@@ -1,14 +1,38 @@
 const openGoogleTranslatorAPIModel = ((jQuery) => {
-    const init = () => {
+    const init = async () => {
+        const languageSupported = await langStatus();
+
+        if(languageSupported === "after-download") {
+            const link = jQuery('<br><span>Install the language pack. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>');
+            jQuery("#atlt_chromeAI_btn").after(link);
+        }
+
+        if(languageSupported !== 'readily') {
+            jQuery("#atlt_chromeAI_btn").attr("disabled", true);
+            return;
+        }
+
         this.translateStatus = false;
         this.completedTranslateIndex = 0;
         jQuery(document).on("click", "#atlt_chromeAI_btn", openStringsModal);
     };
 
-    const openStringsModal = (e) => {
+    const langStatus = async () => {
+        if (!('translation' in self && 'createTranslator' in self.translation)) {
+            console.error("The Translator API is not supported.");
+            return false;
+        }
+
         const defaultLangCode = locoConf.conf.locale.lang || null;
         this.defaultLang = mapLanguageCode(defaultLangCode);
 
+        return await translation.canTranslate({
+            sourceLanguage: 'en',
+            targetLanguage:  this.defaultLang,
+        });
+    }
+
+    const openStringsModal = (e) => {
         const modelContainer = jQuery('div#chrome-ai-translator-model.chrome-ai-translator-container');
         modelContainer.find(".atlt_actions > .atlt_save_strings").prop("disabled", true);
         modelContainer.find(".atlt_stats").hide();
@@ -29,7 +53,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
             this.translateBtn.on("click", startTranslationProcess);
         } else {
             this.translateBtn.text("Continue Translation").on("click", () => {
-                translateStringCall(this.completedTranslateIndex + 1);
+                stringTranslation(this.completedTranslateIndex + 1);
             });
         }
     };
@@ -70,24 +94,6 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
 
     const startTranslationProcess = async () => {
         const langCode = this.defaultLang;
-
-        if (!('translation' in self && 'createTranslator' in self.translation)) {
-            console.error("The Translator API is not supported.");
-            return;
-        }
-
-        const languageSupport = await translation.canTranslate({
-            sourceLanguage: 'en',
-            targetLanguage: langCode,
-        });
-
-        if (languageSupport === 'readily') {
-            await translateStrings();
-        }
-    };
-
-    const translateStrings = async () => {
-        const langCode = this.defaultLang;
         this.translateStatus = true;
         this.translateStringEle = jQuery("#chrome-ai-translator-model .chrome-ai-translator-body table tbody tr td.target.translate");
         this.stringContainer = jQuery("#chrome-ai-translator-model .modal-content .atlt_string_container");
@@ -98,7 +104,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         });
 
         if (this.translateStringEle.length > 0) {
-            await translateStringCall(this.completedTranslateIndex);
+            await stringTranslation(this.completedTranslateIndex);
         }
     };
 
@@ -106,7 +112,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         this.stringContainer.scrollTop(position);
     };
 
-    const translateStringCall = async (index) => {
+    const stringTranslation = async (index) => {
         const stringContainer = this.stringContainer;
         const stringContainerPosition = stringContainer[0].getBoundingClientRect();
         this.completedTranslateIndex = index;
@@ -125,11 +131,12 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
 
         if (this.translateStringEle.length > index + 1 && stringContainer[0].scrollHeight > 100) {
             jQuery("#chrome-ai-translator-model .atlt_translate_progress").fadeIn("slow");
-            await translateStringCall(this.completedTranslateIndex + 1);
+            await stringTranslation(this.completedTranslateIndex + 1);
         } else {
             this.translateBtn.prop("disabled", true);
             jQuery("#chrome-ai-translator-model .atlt_save_strings").prop("disabled", false);
             jQuery("#chrome-ai-translator-model .atlt_translate_progress").fadeOut("slow");
+            jQuery("#chrome-ai-translator-model .atlt_stats").fadeIn("slow");
         }
     };
 

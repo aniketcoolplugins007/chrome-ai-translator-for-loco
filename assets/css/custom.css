@@ -295,6 +295,12 @@ html.merge-translations:before {
   background-color: #135e96;
 }
 
+#atlt_chromeAI_btn ~ a:focus{
+  border: 0px;
+  outline: none;
+  box-shadow: none;
+}
+
 @media screen and (max-width: 769px) {
   .atlt_custom_model .atlt_string_container {
     height: calc(100vh - 570px);
