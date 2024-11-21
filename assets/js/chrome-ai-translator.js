@@ -14,7 +14,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
             return;
         }
 
-        this.translateStatus = false;
+        this.translationStart = false;
         this.completedTranslateIndex = 0;
         this.completedCharacterCount = 0;
         jQuery(document).on("click", "#latlt_chromeAI_btn", openStringsModal);
@@ -54,12 +54,15 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         this.translateBtn.off("click"); // Clear previous click handlers
         this.translateBtn.prop("disabled", false);
 
-        if (!this.translateStatus) {
+        if (!this.translationStart) {
             this.translateBtn.on("click", startTranslationProcess);
-        } else {
+        } else if(this.translateStringEle.length > (this.completedTranslateIndex + 1)){
             this.translateBtn.text("Continue Translation").on("click", () => {
                 stringTranslation(this.completedTranslateIndex + 1);
             });
+        }else{
+            this.translateBtn.prop("disabled", true);
+            jQuery("#chrome-ai-translator-model .latlt_save_strings").prop("disabled", false);
         }
     };
 
@@ -99,7 +102,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
 
     const startTranslationProcess = async () => {
         const langCode = this.defaultLang;
-        this.translateStatus = true;
+        this.translationStart = true;
         this.translateStringEle = jQuery("#chrome-ai-translator-model .chrome-ai-translator-body table tbody tr td.target.translate");
         this.stringContainer = jQuery("#chrome-ai-translator-model .modal-content .latlt_string_container");
 
