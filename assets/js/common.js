@@ -16,6 +16,12 @@
     const checkChromeAILangStatus = async () => {
         if(locoConf && locoConf.conf) {
             const { locale } = locoConf.conf;
+
+            if (!('translation' in self && 'createTranslator' in self.translation)) {
+                console.error("The Translator API is not supported.");
+                return false;
+            }
+
             const canTranslate = await translation.canTranslate({
                 sourceLanguage: 'en',
                 targetLanguage: locale.lang,
@@ -350,9 +356,11 @@
     const modelBodyHTML = (widgetType, bodyCls) => `
         <div class="modal-body ${bodyCls}">
             <div class="latlt_translate_progress">
-                Automatic translation is in progress....<br/>
-                It will take a few minutes, enjoy ☕ coffee in this time!<br/><br/>
-                Please do not leave this window or browser tab while the translation is in progress...
+                <div class="latlt_progress_container">
+                    Automatic translation is in progress....<br/>
+                    It will take a few minutes, enjoy ☕ coffee in this time!<br/><br/>
+                    Please do not leave this window or browser tab while the translation is in progress...
+                </div>
             </div>
             ${translatorWidget(widgetType)}
             <div class="latlt_string_container">
@@ -377,11 +385,9 @@
             </div>
             <div style="display:none" class="latlt_stats hidden">
                 Wahooo! You have saved your valuable time via auto translating 
-                <strong class="totalChars"></strong> characters using 
+                <strong class="totalChars">0</strong> characters using 
                 <strong>
-                    <a href="https://wordpress.org/support/plugin/automatic-translator-addon-for-loco-translate/reviews/#new-post" target="_new">
-                        Loco Automatic Translate Addon
-                    </a>
+                    Local AI Translator for Loco Translate
                 </strong>
             </div>
         </div>
@@ -403,9 +409,7 @@
                 Wahooo! You have saved your valuable time via auto translating 
                 <strong class="totalChars"></strong> characters using 
                 <strong>
-                    <a href="https://wordpress.org/support/plugin/automatic-translator-addon-for-loco-translate/reviews/#new-post" target="_new">
-                        Loco Automatic Translate Addon
-                    </a>
+                    Local AI Translator for Loco Translate
                 </strong>
             </div>
         </div>`;
