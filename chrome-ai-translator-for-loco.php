@@ -2,7 +2,7 @@
 /*
 Plugin Name: Local AI Translator for Loco Translate
 Description: Local AI Translator for Loco Translate to translate your website content into any language.
-Version: 2.4.5
+Version: 1.0.0
 License: GPL2
 Text Domain: loco-ai-translator-for-loco-translate
 Domain Path: languages
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'LATLT_FILE', __FILE__ );
 define( 'LATLT_URL', plugin_dir_url( LATLT_FILE ) );
 define( 'LATLT_PATH', plugin_dir_path( LATLT_FILE ) );
-define( 'LATLT_VERSION', '2.4.5' );
+define( 'LATLT_VERSION', '1.0.0' );
 
 /**
  * @package Chrome AI Translator for Loco Translate
