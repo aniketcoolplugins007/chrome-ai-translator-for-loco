@@ -173,7 +173,7 @@ span.beta-button {
 }
 
 /* String Container Styles */
-#chrome-ai-translator-model.latlt_custom_model .latlt_string_container {
+#chrome-ai-translator-modal.latlt_custom_model .latlt_string_container {
   overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - 355px);
@@ -303,7 +303,7 @@ html.merge-translations:before {
   background-color: #135e96;
 }
 
-#latlt_chromeAI_btn ~ a{
+#chrome-ai-translator_settings_btn ~ a{
   margin-top: .5rem;
   text-decoration: none;
   font-size: 1.1rem;
@@ -313,11 +313,11 @@ html.merge-translations:before {
   align-items: center;
 }
 
-#latlt_chromeAI_btn ~ a img{
+#chrome-ai-translator_settings_btn ~ a img{
   margin-inline: .2rem;
 }
 
-#latlt_chromeAI_btn ~ a:focus{
+#chrome-ai-translator_settings_btn ~ a:focus{
   border: 0px;
   outline: none;
   box-shadow: none;

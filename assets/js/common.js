@@ -4,11 +4,7 @@
     const { ajax_url: ajaxUrl, nonce, LATLT_URL, extra_class: rtlClass } = window.extradata;
 
     const initialize = async () => {
-        const langSupported = await checkChromeAILangStatus();
-
-        if(langSupported === "readily") {
-            onLoad();
-        }
+        onLoad();
 
         setupEventListeners();
     };
@@ -33,25 +29,74 @@
         return false;
     };
 
-    const onLoad = () => {
+    const onLoad = async () => {
         if (locoConf && locoConf.conf) {
             const { conf } = locoConf;
             const allStrings = locoConf.conf.podata;
             allStrings.shift();
             const { locale, project } = conf;
             const projectId = generateProjectId(project, locale);
-            checkChromeAILangStatus();
-            createStringsModal(projectId, 'chrome-ai-translator');
+
+            const langSupported = await checkChromeAILangStatus();
+
+            if(langSupported === "readily") {
+                createStringsModal(projectId, 'chrome-ai-translator');
+            }
+
             addStringsInModal(allStrings);
             stringModalEvents();
+
+            jQuery('.latlt_settings_btn').on('click', (e) => {
+                const widgetId=e.currentTarget.dataset.widgetType;
+                
+                showModalBox(widgetId);
+            });
         }
+    };
+
+    const showModalBox = (widgetId) => {
+        const modelContainer = jQuery(`#${widgetId}`);
+
+        modelContainer.find(".latlt_actions > .latlt_save_strings").prop("disabled", true);
+        modelContainer.find(".latlt_stats").hide();
+        localStorage.setItem("lang", this.defaultLang);
+
+        if (!isLanguageSupported(locoConf.conf.locale.lang)) {
+            showUnsupportedLanguageMessage(modelContainer);
+        } else {
+            jQuery("#latlt-dialog").dialog("close");
+            modelContainer.fadeIn("slow");
+            jQuery(".latlt_custom_model .latlt_translate_progress").hide();
+        }
+    };
+    
+    const isLanguageSupported = (lang) => {
+        const supportedLanguages = new Set([
+            'af', 'jv', 'no', 'am', 'ar', 'az', 'ba', 'be', 'bg', 'bn', 'bs', 'ca', 'ceb', 'cs', 'cy',
+            'da', 'de', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'ga', 'gd', 'gl', 'gu',
+            'he', 'hi', 'hr', 'ht', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'jv', 'ka', 'kk', 'km', 'kn',
+            'ko', 'ky', 'la', 'lb', 'lo', 'lt', 'lv', 'mg', 'mhr', 'mi', 'mk', 'ml', 'mn', 'mr',
+            'mrj', 'ms', 'mt', 'my', 'ne', 'nl', 'no', 'pa', 'pap', 'pl', 'pt', 'ro', 'ru', 'si',
+            'sk', 'sl', 'sq', 'sr', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'tl', 'tr', 'tt',
+            'udm', 'uk', 'ur', 'uz', 'vi', 'xh', 'yi', 'zh'
+        ]);
+        return supportedLanguages.has(lang);
+    };
+
+    const showUnsupportedLanguageMessage = (modelContainer) => {
+        jQuery("#latlt-dialog").dialog("close");
+        modelContainer.find(".notice-container")
+            .addClass('notice inline notice-warning')
+            .html("Chrome AI Translator does not support this language.");
+        modelContainer.find(".latlt_string_container, .choose-lang, .latlt_save_strings, #ytWidget, .translator-widget, .notice-info, .is-dismissible").hide();
+        modelContainer.fadeIn("slow");
     };
 
     const setupEventListeners = () => {
         if ($("#loco-editor nav").find("#cool-auto-translate-btn").length === 0) {
             addAutoTranslationBtn();
         }
-        settingsModel();
+        settingsModel(['chrome-ai-translator']);
         $("#cool-auto-translate-btn").on("click", openSettingsModel);
         $("button.icon-robot[data-loco='auto']").on("click", onAutoTranslateClick);
         $(".latlt_save_strings").on("click", onSaveClick);
@@ -235,8 +280,8 @@
         jQuery.post(ajaxUrl, data, () => {
             $('#loco-editor nav').find('button').each(function () {
                 const id = this.getAttribute('data-loco');
-                if (id === "auto" && !$(this).hasClass('model-opened')) {
-                    $(this).addClass('model-opened').trigger("click");
+                if (id === "auto" && !$(this).hasClass('modal-opened')) {
+                    $(this).addClass('modal-opened').trigger("click");
                 }
             });
         });
@@ -312,20 +357,23 @@
         $(".latlt_strings_table > tbody.latlt_strings_body").html(html);
     };
 
-    const settingsModel = () => {
+    const settingsModel = (widgetTypes = []) => {
         const chromeAiPreviewImg = `${LATLT_URL}assets/images/${window.extradata['chrome_ai_preview']}`;
-       
-        const modelHTML = `
-            <div id="latlt-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
-                <div class="latlt-settings">
-                     <strong class="latlt-heading">Translate Using Chrome AI Translator</strong>
-                    <div class="inputGroup">
-                       <button id="latlt_chromeAI_btn" class="button button-primary">Chrome AI Translator</button>
-                        <br/><a href="https://translate.google.com/" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
+        const modelHTML = widgetTypes.reduce((html, widgetType) => {
+            if (widgetType === 'chrome-ai-translator') {
+                return html + `
+                <div id="latlt-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
+                    <div class="latlt-settings">
+                        <strong class="latlt-heading">Translate Using Chrome AI Translator</strong>
+                        <div class="inputGroup">
+                            <button id="${widgetType}_settings_btn" class="button button-primary latlt_settings_btn" data-widget-type="${widgetType}-modal">Chrome AI Translator</button>
+                            <br/><a href="https://translate.google.com/" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
+                        </div>
                     </div>
-                </div>
-            </div>
-        `;
+                </div>`;
+            }
+            return html;
+        }, '');
 
         $("body").append(modelHTML);
     };
@@ -350,7 +398,7 @@
         headerCls: `${widgetType}-header`,
         bodyCls: `${widgetType}-body`,
         footerCls: `${widgetType}-footer`,
-        wrapperId: `${widgetType}-model`
+        wrapperId: `${widgetType}-modal`
     });
 
     const modelBodyHTML = (widgetType, bodyCls) => `
