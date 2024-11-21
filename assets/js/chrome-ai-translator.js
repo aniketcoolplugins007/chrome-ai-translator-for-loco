@@ -57,6 +57,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         if (!this.translationStart) {
             this.translateBtn.on("click", startTranslationProcess);
         } else if(this.translateStringEle.length > (this.completedTranslateIndex + 1)){
+            jQuery("#chrome-ai-translator-model .latlt_translate_progress").hide();
             this.translateBtn.text("Continue Translation").on("click", () => {
                 stringTranslation(this.completedTranslateIndex + 1);
             });
@@ -145,7 +146,7 @@ const openGoogleTranslatorAPIModel = ((jQuery) => {
         if (this.translateStringEle.length > index + 1 && stringContainer[0].scrollHeight > 100) {
             jQuery("#chrome-ai-translator-model .latlt_translate_progress").fadeIn("slow");
             await stringTranslation(this.completedTranslateIndex + 1);
-        } else {
+        } else if(index === this.translateStringEle.length - 1) {
             setTimeout(() => {
                 this.translateBtn.prop("disabled", true);
                 jQuery("#chrome-ai-translator-model .latlt_save_strings").prop("disabled", false);
