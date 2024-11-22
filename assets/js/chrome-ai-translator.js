@@ -26,7 +26,7 @@ class ChromeAiTranslator {
 
         // Handle unsupported language
         if (languageSupported === "language-not-supported") {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 500));
             const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Unfortunately, the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language is currently not supported by the Local Translator AI modal. Please check and read the docs which languages are currently supported by <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">clicking here</a>.</span>`);
             jQuery("#chrome-ai-translator_settings_btn");
             this.onLanguageError(message);
@@ -35,7 +35,7 @@ class ChromeAiTranslator {
 
         // Handle API disabled case
         if (languageSupported === "api-disabled") {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 500));
             const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">The Translator AI modal is currently not supported or disabled in your browser. Please enable it. For detailed instructions on how to enable the Translator AI modal in your Chrome browser, <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">click here</a>.</span>`);
             jQuery("#chrome-ai-translator_settings_btn");
             this.onLanguageError(message);
