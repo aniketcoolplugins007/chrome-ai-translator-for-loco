@@ -7,9 +7,9 @@ class ChromeAiTranslator {
 
     // Constructor to initialize the translator with options
     constructor(options) {
-        this.btnSelector = options.btnSelector; // Selector for the button that triggers translation
-        this.stringSelector = options.stringSelector; // Selector for the elements containing strings to translate
-        this.progressBarSelector = options.progressBarSelector; // Selector for the progress bar element
+        this.btnSelector = options.btnSelector || false; // Selector for the button that triggers translation
+        this.stringSelector = options.stringSelector || false; // Selector for the elements containing strings to translate
+        this.progressBarSelector = options.progressBarSelector || false; // Selector for the progress bar element
         this.onStartTranslationProcess = options.onStartTranslationProcess || (() => { }); // Callback for when translation starts
         this.onComplete = options.onComplete || (() => { }); // Callback for when translation completes
         this.onLanguageError = options.onLanguageError || (() => { }); // Callback for language errors
@@ -73,7 +73,9 @@ class ChromeAiTranslator {
         this.completedTranslateIndex = 0; // Index of the last completed translation
         this.completedCharacterCount = 0; // Count of characters translated
         this.translateBtnEvents(); // Set up button events
-        this.addProgressBar(); // Add progress bar to the UI
+        if(this.progressBarSelector) {
+            this.addProgressBar(); // Add progress bar to the UI
+        }
     };
 
     // Method to check the status of the language support
@@ -102,6 +104,9 @@ class ChromeAiTranslator {
 
     // Method to set up button events for translation
     translateBtnEvents = (e) => {
+        if (!this.btnSelector || jQuery(this.btnSelector).length === 0) return this.onLanguageError("The button selector is missing. Please provide a valid selector for the button.");
+        if (!this.stringSelector || jQuery(this.stringSelector).length === 0) return this.onLanguageError("The string selector is missing. Please provide a valid selector for the strings to be translated.");
+
         this.translateStatus = true; // Set translation status to true
         this.translateBtn = jQuery(this.btnSelector); // Get the translation button
         this.translateBtn.off("click"); // Clear previous click handlers
@@ -170,7 +175,9 @@ class ChromeAiTranslator {
             ele.innerText = translatedString; // Set the translated string
         }
         this.completedTranslateIndex = index; // Update completed index
-        this.updateProgressBar(); // Update the progress bar
+        if(this.progressBarSelector) {
+            this.updateProgressBar(); // Update the progress bar
+        }
         this.onAfterTranslate(ele); // Call the after translation callback
 
         // Continue translating the next string if available
