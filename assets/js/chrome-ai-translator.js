@@ -14,29 +14,29 @@ class ChromeAiTranslator {
         this.onTranslateRunning = options.onTranslateRunning || (() => { });
         this.sourceLanguage = options.sourceLanguage || "en";
         this.targetLanguage = options.targetLanguage || "hi";
-        return this;
+        this.targetLanguageLabel = options.targetLanguageLabel || "Hindi";
     }
 
-    extraData = () => {
+    extraData = async () => {
+        const languageSupported = await this.langStatus();
+
+        if (languageSupported === "after-download") {
+            const link = jQuery(`<br><span>Install the <strong>${this.targetLanguageLabel}(${this.targetLanguage})</strong> language pack. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>`);
+            jQuery("#chrome-ai-translator_settings_btn").after
+            this.onLanguageError(link);
+            return {};
+        }
+
+        if (languageSupported !== 'readily') {
+            const message = jQuery(`<br><span style="color: red; margin-top: .5rem; display: inline-block;">Please confirm that the <strong>${this.targetLanguageLabel}(${this.targetLanguage})</strong> language pack is installed in your browser and included in your browser\'s preferred language settings. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>`);
+            this.onLanguageError(message);
+            return {};
+        }  
+
         return { continueTranslation: this.continueTranslation, stopTranslation: this.stopTranslation, startTranslation: this.startTranslation, reInit: this.reInit, init: this.init };
     }
 
     init = async () => {
-        const languageSupported = await this.langStatus();
-
-        if (languageSupported === "after-download") {
-            const link = jQuery('<br><span>Install the language pack. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>');
-            jQuery("#chrome-ai-translator_settings_btn").after
-            this.onLanguageError(link);
-            return;
-        }
-
-        if (languageSupported !== 'readily') {
-            const message = jQuery('<br><span style="color: red; margin-top: .5rem; display: inline-block;">Please confirm that the language pack is installed in your browser and included in your browser\'s preferred language settings. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>');
-            this.onLanguageError(message);
-            return;
-        }
-
         this.translationStart = false;
         this.completedTranslateIndex = 0;
         this.completedCharacterCount = 0;
@@ -64,7 +64,6 @@ class ChromeAiTranslator {
         this.translateBtn = jQuery(this.btnSelector);
         this.translateBtn.off("click"); // Clear previous click handlers
         this.translateBtn.prop("disabled", false);
-
 
         if (!this.translationStart) {
             this.translateBtn.on("click", this.startTranslationProcess);
@@ -196,16 +195,17 @@ class ChromeAiTranslator {
 
 // Call ChromeAiTranslator Object and start translation
 ((jQuery) => {
-    jQuery(document).ready(() => {
+    jQuery(document).ready(async () => {
         let transalationInitialize = false;
-        const TranslatorObject = ChromeAiTranslator.Object(
+        const TranslatorObject = await ChromeAiTranslator.Object(
             {
                 mainWrapperSelector: ".chrome-ai-translator",
                 btnSelector: ".chrome-ai-translator #chrome_ai_translator_element #chrome_ai_translator_btn",
                 stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
                 progressBarSelector: ".latlt_progress_container",
                 sourceLanguage: "en",
-                targetLanguage: "hi",
+                targetLanguage: locoConf.conf.locale.lang,
+                targetLanguageLabel: locoConf.conf.locale.label,
                 onStartTranslationProcess: startTransaltion,
                 onComplete: completeTranslation,
                 onLanguageError: languageError,
@@ -223,7 +223,7 @@ class ChromeAiTranslator {
         });
 
         jQuery(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#latlt-dialog") && jQuery("#chrome-ai-translator-modal").css("display") !== "none") {
+            if (jQuery("#chrome-ai-translator-modal").length > 0 && !event.target.closest(".modal-content") && !event.target.closest("#latlt-dialog") && jQuery("#chrome-ai-translator-modal").css("display") !== "none") {
                 TranslatorObject.stopTranslation();
             }
         });

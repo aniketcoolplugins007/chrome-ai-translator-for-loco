@@ -6,18 +6,17 @@
     const initialize = async () => {
         onLoad();
 
-        setupEventListeners();
     };
-
+    
     const checkChromeAILangStatus = async () => {
         if(locoConf && locoConf.conf) {
             const { locale } = locoConf.conf;
-
+            
             if (!('translation' in self && 'createTranslator' in self.translation)) {
                 console.error("The Translator API is not supported.");
                 return false;
             }
-
+            
             const canTranslate = await translation.canTranslate({
                 sourceLanguage: 'en',
                 targetLanguage: locale.lang,
@@ -25,10 +24,10 @@
             
             return canTranslate;
         }
-
+        
         return false;
     };
-
+    
     const onLoad = async () => {
         if (locoConf && locoConf.conf) {
             const { conf } = locoConf;
@@ -36,15 +35,17 @@
             allStrings.shift();
             const { locale, project } = conf;
             const projectId = generateProjectId(project, locale);
-
+            
             const langSupported = await checkChromeAILangStatus();
-
+            
             if(langSupported === "readily") {
                 createStringsModal(projectId, 'chrome-ai-translator');
             }
-
+            
             addStringsInModal(allStrings);
             stringModalEvents();
+            
+            setupEventListeners();
 
             jQuery('.latlt_settings_btn').on('click', (e) => {
                 const widgetId=e.currentTarget.dataset.widgetType;
