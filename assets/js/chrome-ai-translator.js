@@ -189,15 +189,25 @@ class ChromeAiTranslator {
         if (index === this.translateStringEle.length - 1) {
             this.translateBtn.prop("disabled", true); // Disable the button
             this.onComplete(); // Call the complete callback
+            jQuery(this.progressBarSelector).find(".chrome-ai-translator-strings-count").show().find(".totalChars").html(this.completedCharacterCount);
         }
     };
 
     // Method to add a progress bar to the UI
     addProgressBar = () => {
         if (!document.querySelector("#chrome-ai-translator-modal .chrome-ai-translator_progress_bar")) {
-            const progressBar = jQuery('<div class="chrome-ai-translator_progress_bar" style="background-color: #f3f3f3;border-radius: 10px;overflow: hidden;margin: 1.5rem auto; width: 50%;">' +
-                '<div class="chrome-ai-translator_progress" style="overflow: hidden;transition: width .5s ease-in-out; border-radius: 10px;text-align: center;width: 0%;height: 20px;box-sizing: border-box;background-color: #4caf50; color: #fff; font-weight: 600;"></div>' +
-                '</div>');
+            const progressBar = jQuery(`
+                <div class="chrome-ai-translator_progress_bar" style="background-color: #f3f3f3;border-radius: 10px;overflow: hidden;margin: 1.5rem auto; width: 50%;">
+                <div class="chrome-ai-translator_progress" style="overflow: hidden;transition: width .5s ease-in-out; border-radius: 10px;text-align: center;width: 0%;height: 20px;box-sizing: border-box;background-color: #4caf50; color: #fff; font-weight: 600;"></div>
+                </div>
+                <div style="display:none; color: #ffff9f;" class="chrome-ai-translator-strings-count hidden">
+                    Wahooo! You have saved your valuable time via auto translating 
+                    <strong class="totalChars">0</strong> characters using 
+                    <strong>
+                        Local AI Translator
+                    </strong>
+                </div>
+            `);
             jQuery(this.progressBarSelector).append(progressBar); // Append the progress bar to the specified selector
         }
     };
@@ -266,8 +276,8 @@ class ChromeAiTranslator {
         let transalationInitialize = false;
         const TranslatorObject = await ChromeAiTranslator.Object(
             {
-                mainWrapperSelector: ".chrome-ai-translator",
-                btnSelector: ".chrome-ai-translator #chrome_ai_translator_element #chrome_ai_translator_btn",
+                mainWrapperSelector: "#chrome-ai-translator-modal",
+                btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element #chrome_ai_translator_btn",
                 stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
                 progressBarSelector: ".latlt_progress_container",
                 sourceLanguage: "en",
@@ -290,7 +300,7 @@ class ChromeAiTranslator {
         });
 
         jQuery(window).on("click", (event) => {
-            if (jQuery("#chrome-ai-translator-modal").length > 0 && !event.target.closest(".modal-content") && !event.target.closest("#latlt-dialog") && jQuery("#chrome-ai-translator-modal").css("display") !== "none") {
+            if (!event.target.closest(".modal-content") && !event.target.closest("#latlt-dialog")) {
                 TranslatorObject.stopTranslation();
             }
         });
@@ -328,8 +338,7 @@ class ChromeAiTranslator {
         setTimeout(() => {
             jQuery("#chrome-ai-translator-modal .latlt_save_strings").prop("disabled", false);
             jQuery("#chrome-ai-translator-modal .latlt_translate_progress").fadeOut("slow");
-            jQuery("#chrome-ai-translator-modal .latlt_stats").fadeIn("slow");
-        }, 600);
+        }, 2500);
     }
     
     const languageError = (message) => {

@@ -35,7 +35,6 @@
         const modelContainer = jQuery(`#${widgetId}`);
 
         modelContainer.find(".latlt_actions > .latlt_save_strings").prop("disabled", true);
-        modelContainer.find(".latlt_stats").hide();
         localStorage.setItem("lang", this.defaultLang);
 
         if (!isLanguageSupported(locoConf.conf.locale.lang)) {
@@ -49,14 +48,11 @@
     
     const isLanguageSupported = (lang) => {
         const supportedLanguages = new Set([
-            'af', 'jv', 'no', 'am', 'ar', 'az', 'ba', 'be', 'bg', 'bn', 'bs', 'ca', 'ceb', 'cs', 'cy',
-            'da', 'de', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'ga', 'gd', 'gl', 'gu',
-            'he', 'hi', 'hr', 'ht', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'jv', 'ka', 'kk', 'km', 'kn',
-            'ko', 'ky', 'la', 'lb', 'lo', 'lt', 'lv', 'mg', 'mhr', 'mi', 'mk', 'ml', 'mn', 'mr',
-            'mrj', 'ms', 'mt', 'my', 'ne', 'nl', 'no', 'pa', 'pap', 'pl', 'pt', 'ro', 'ru', 'si',
-            'sk', 'sl', 'sq', 'sr', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'tl', 'tr', 'tt',
-            'udm', 'uk', 'ur', 'uz', 'vi', 'xh', 'yi', 'zh'
-        ]);
+            'es', 'js', 'ar', 'bn', 'de', 'fr', 'hi', 'it', 'ko', 'nl', 
+            'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh', 'zh-hant', 'bg', 
+            'cs', 'da', 'el', 'fi', 'hr', 'hu', 'id', 'iw', 'lt', 'no', 
+            'ro', 'sk', 'sl', 'sv', 'uk', 'en-zh'
+        ].map(lang => lang.toLowerCase()));
         return supportedLanguages.has(lang);
     };
 
@@ -326,9 +322,6 @@
                     }
                 }
             }
-            $(".latlt_stats").each(function () {
-                $(this).find(".totalChars").html(totalTChars);
-            });
         }
 
         $(".latlt_strings_table > tbody.latlt_strings_body").html(html);
@@ -341,10 +334,10 @@
                 return html + `
                 <div id="latlt-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
                     <div class="latlt-settings">
-                        <strong class="latlt-heading">Translate Using Chrome AI Translator</strong>
+                        <strong class="latlt-heading">Translate Using Local AI Translator</strong>
                         <div class="inputGroup">
-                            <button id="${widgetType}_settings_btn" class="button button-primary latlt_settings_btn" data-widget-type="${widgetType}-modal">Chrome AI Translator</button>
-                            <br/><a href="https://translate.google.com/" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
+                            <button id="${widgetType}_settings_btn" class="button button-primary latlt_settings_btn" data-widget-type="${widgetType}-modal">Local AI Translator</button>
+                            <br/><a href="https://developer.chrome.com/docs/ai/translator-api" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
                         </div>
                     </div>
                 </div>`;
@@ -408,16 +401,9 @@
             <div class="latlt_actions">
                 <button class="latlt_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
-            <div style="display:none" class="latlt_stats hidden">
-                Wahooo! You have saved your valuable time via auto translating 
-                <strong class="totalChars">0</strong> characters using 
-                <strong>
-                    Local AI Translator for Loco Translate
-                </strong>
-            </div>
         </div>
         <div class="notice inline notice-info is-dismissible">
-            Plugin will not translate any strings with HTML or special characters because Chrome AI Translator currently does not support HTML and special characters translations.
+            Plugin will not translate any strings with HTML or special characters because Chrome In Translator currently does not support HTML and special characters translations.
                         You can edit translated strings inside Loco Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
         </div>
         <div class="notice inline notice-info is-dismissible">
@@ -430,20 +416,13 @@
             <div class="latlt_actions">
                 <button class="latlt_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
-            <div style="display:none" class="latlt_stats">
-                Wahooo! You have saved your valuable time via auto translating 
-                <strong class="totalChars"></strong> characters using 
-                <strong>
-                    Local AI Translator for Loco Translate
-                </strong>
-            </div>
         </div>`;
 
     const translatorWidget = (widgetType) => {
         if (widgetType === "chrome-ai-translator") {
             return `
                 <div class="translator-widget ${widgetType}">
-                    <h3 class="choose-lang">Translate Using Chrome AI Translator <span class="dashicons-before dashicons-translation"></span></h3>
+                    <h3 class="choose-lang">Translate Using Chrome Local AI Translator <span class="dashicons-before dashicons-translation"></span></h3>
                     <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate to ${locoConf.conf.locale.label}</button></div>
                 </div>`;
         }
