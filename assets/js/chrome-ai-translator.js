@@ -290,6 +290,10 @@ class ChromeAiTranslator {
             }
         );
 
+        if(!TranslatorObject.hasOwnProperty("init")) {
+            return;
+        }
+
         jQuery(document).on("click", "#chrome-ai-translator_settings_btn", function () {
             if (!transalationInitialize && typeof TranslatorObject.init === 'function') {
                 transalationInitialize = true;
