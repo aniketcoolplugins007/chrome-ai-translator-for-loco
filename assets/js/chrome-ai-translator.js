@@ -248,6 +248,7 @@ class ChromeAiTranslator {
  * Example Usage of the ChromeAiTranslator.init method.
  * This method initializes the translator with the following configuration options:
  * 
+ * mainWrapperSelector: Selector for the main wrapper element that contains the translation elements.
  * btnSelector: Selector for the button that triggers the translation process.
  * btnClass: Class for custom styling the button
  * btnText: Text for the button
@@ -263,6 +264,7 @@ class ChromeAiTranslator {
  */
 // const chromeAiTranslatorObject = ChromeAiTranslator.Object(
 //     {
+//         mainWrapperSelector: ".main-wrapper", // Main Wrapper Class, Id or Selector
 //         btnSelector: ".translator-container .translator-button", // Button Class, Id or Selector
 //         btnClass: "Btn_custom_class", // Button Class for custom styling
 //         btnText: "Translate To French", // Button Text
