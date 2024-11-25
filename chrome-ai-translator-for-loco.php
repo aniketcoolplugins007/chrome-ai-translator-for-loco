@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Local AI Translator for Loco Translate
-Description: Local AI Translator for Loco Translate to translate your website content into any language.
+Plugin Name: Translate with Chrome Bulit-in AI
+Description: Translate with Chrome Bulit-in AI to translate your website content into any language.
 Version: 1.0.0
 License: GPL2
-Text Domain: loco-ai-translator-for-loco-translate
+Text Domain: translate-with-chrome-built-in-ai
 Domain Path: languages
 Author: Cool Plugins
 Author URI: https://coolplugins.net/
@@ -14,25 +14,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-define( 'LATLT_FILE', __FILE__ );
-define( 'LATLT_URL', plugin_dir_url( LATLT_FILE ) );
-define( 'LATLT_PATH', plugin_dir_path( LATLT_FILE ) );
-define( 'LATLT_VERSION', '1.0.0' );
+define( 'TCBIA_FILE', __FILE__ );
+define( 'TCBIA_URL', plugin_dir_url( TCBIA_FILE ) );
+define( 'TCBIA_PATH', plugin_dir_path( TCBIA_FILE ) );
+define( 'TCBIA_VERSION', '1.0.0' );
 
 /**
  * @package Chrome AI Translator for Loco Translate
  * @version 2.4
  */
 
-if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
+if ( ! class_exists( 'TranslatorWithChromeAI' ) ) {
 
 	/** Singleton ************************************/
-	final class ChromeAITranslatorForLoco {
+	final class TranslatorWithChromeAI {
 
 		/**
 		 * The unique instance of the plugin.
 		 *
-		 * @var ChromeAITranslatorForLoco
+		 * @var TranslatorWithChromeAI
 		 */
 		private static $instance;
 
@@ -55,20 +55,20 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		 */
 		public static function register() {
 			$thisPlugin = self::$instance;
-			register_activation_hook( LATLT_FILE, array( $thisPlugin, 'latlt_activate' ) );
-			register_deactivation_hook( LATLT_FILE, array( $thisPlugin, 'latlt_deactivate' ) );
+			register_activation_hook( TCBIA_FILE, array( $thisPlugin, 'tcbia_activate' ) );
+			register_deactivation_hook( TCBIA_FILE, array( $thisPlugin, 'tcbia_deactivate' ) );
 
 			// run actions and filter only at admin end.
 			if ( is_admin() ) {
-				add_action( 'plugins_loaded', array( $thisPlugin, 'latlt_check_required_loco_plugin' ) );
+				add_action( 'plugins_loaded', array( $thisPlugin, 'tcbia_check_required_loco_plugin' ) );
 				// add notice to use latest loco translate addon
-				add_action( 'init', array( $thisPlugin, 'latlt_verify_loco_version' ) );
+				add_action( 'init', array( $thisPlugin, 'tcbia_verify_loco_version' ) );
 
-				add_action( 'admin_enqueue_scripts', array( $thisPlugin, 'latlt_enqueue_scripts' ) );
+				add_action( 'admin_enqueue_scripts', array( $thisPlugin, 'tcbia_enqueue_scripts' ) );
 
 				/* since version 2.1 */
-				add_filter( 'loco_api_providers', array( $thisPlugin, 'latlt_register_api' ), 10, 1 );
-				add_action( 'loco_api_ajax', array( $thisPlugin, 'latlt_ajax_init' ), 0, 0 );
+				add_filter( 'loco_api_providers', array( $thisPlugin, 'tcbia_register_api' ), 10, 1 );
+				add_action( 'loco_api_ajax', array( $thisPlugin, 'tcbia_ajax_init' ), 0, 0 );
 				add_action( 'wp_ajax_save_all_translations', array( $thisPlugin, 'save_translations_handler' ) );
 			}
 		}
@@ -78,7 +78,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		| Register API Manager inside Loco Translate Plugin
 		|----------------------------------------------------------------------
 		*/
-		function latlt_register_api( array $apis ) {
+		function tcbia_register_api( array $apis ) {
 			$apis[] = array(
 				'id'   => 'loco_auto',
 				'key'  => '122343',
@@ -93,7 +93,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		| Auto Translate Request handler
 		|----------------------------------------------------------------------
 		*/
-		function latlt_ajax_init() {
+		function tcbia_ajax_init() {
 			 add_filter( 'loco_api_translate_loco_auto', array( self::$instance, 'loco_auto_translator_process_batch' ), 0, 3 );
 		}
 
@@ -108,7 +108,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		function loco_auto_translator_process_batch( array $sources, Loco_Locale $Locale, array $config ) {
 			$targets = array();
 			// Extract domain from the referrer URL
-			$url_data   = self::$instance->latlt_parse_query( $_SERVER['HTTP_REFERER'] );
+			$url_data   = self::$instance->tcbia_parse_query( $_SERVER['HTTP_REFERER'] );
 			$domain     = isset( $url_data['domain'] ) && ! empty( $url_data['domain'] ) ? sanitize_text_field( $url_data['domain'] ) : 'temp';
 			$lang       = sanitize_text_field( $Locale->lang );
 			$region     = sanitize_text_field( $Locale->region );
@@ -140,7 +140,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 			}
 		}
 
-		function latlt_parse_query( $var ) {
+		function tcbia_parse_query( $var ) {
 			/**
 			 *  Use this function to parse out the query array element from
 			 *  the output of parse_url().
@@ -209,9 +209,9 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		| also register the plugin text domain
 		|----------------------------------------------------------------------
 		*/
-		public function latlt_check_required_loco_plugin() {
+		public function tcbia_check_required_loco_plugin() {
 			if ( ! function_exists( 'loco_plugin_self' ) ) {
-				add_action( 'admin_notices', array( self::$instance, 'latlt_plugin_required_admin_notice' ) );
+				add_action( 'admin_notices', array( self::$instance, 'tcbia_plugin_required_admin_notice' ) );
 			}
 			// load language files
 			load_plugin_textdomain( 'chrome-ai-translator-for-loco', false, basename( dirname( __FILE__ ) ) . '/languages/' );
@@ -221,7 +221,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		| Notice to 'Admin' if "Loco Translate" is not active
 		|----------------------------------------------------------------------
 		*/
-		public function latlt_plugin_required_admin_notice() {
+		public function tcbia_plugin_required_admin_notice() {
 			if ( current_user_can( 'activate_plugins' ) ) {
 				$url         = 'plugin-install.php?tab=plugin-information&plugin=loco-translate&TB_iframe=true';
 				$title       = 'Loco Translate';
@@ -230,7 +230,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 				sprintf(
 					__(
 						'In order to use <strong>%1$s</strong> plugin, please install and activate the latest version  of <a href="%2$s" class="thickbox" title="%3$s">%4$s</a>',
-						'loco-ai-translator-for-loco-translate'
+						'translate-with-chrome-built-in-ai'
 					),
 					esc_attr( $plugin_info['Name'] ),
 					esc_url( $url ),
@@ -247,7 +247,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		| check User Status
 		|----------------------------------------------------------------------
 		*/
-		public function latlt_verify_loco_version() {
+		public function tcbia_verify_loco_version() {
 			if ( function_exists( 'loco_plugin_version' ) ) {
 				$locoV = loco_plugin_version();
 				if ( version_compare( $locoV, '2.4.0', '<' ) ) {
@@ -269,7 +269,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 				sprintf(
 					__(
 						'In order to use <strong>%1$s</strong> (version <strong>%2$s</strong>), Please update <a href="%3$s" class="thickbox" title="%4$s">%5$s</a> official plugin to a latest version (2.4.0 or upper)',
-						'loco-ai-translator-for-loco-translate'
+						'translate-with-chrome-built-in-ai'
 					),
 					esc_attr( $plugin_info['Name'] ),
 					esc_attr( $plugin_info['Version'] ),
@@ -286,16 +286,16 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		|  Enqueue required JS file
 		|------------------------------------------------------------------------
 		*/
-		function latlt_enqueue_scripts( $hook ) {
+		function tcbia_enqueue_scripts( $hook ) {
 			// load assets only on editor page
 			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'file-edit' ) {
-				wp_register_script( 'loco-addon-custom', LATLT_URL . 'assets/js/common.min.js', array( 'loco-translate-admin' ), LATLT_VERSION, true );
-				wp_register_script( 'chrome-ai-translator-for-loco', LATLT_URL . 'assets/js/chrome-ai-translator.min.js', array( 'loco-addon-custom' ), LATLT_VERSION, true );
+				wp_register_script( 'loco-addon-custom', TCBIA_URL . 'assets/js/common.min.js', array( 'loco-translate-admin' ), TCBIA_VERSION, true );
+				wp_register_script( 'chrome-ai-translator-for-loco', TCBIA_URL . 'assets/js/chrome-ai-translator.min.js', array( 'loco-addon-custom' ), TCBIA_VERSION, true );
 				wp_register_style(
 					'loco-addon-custom-css',
-					LATLT_URL . 'assets/css/custom.min.css',
+					TCBIA_URL . 'assets/css/custom.min.css',
 					null,
-					LATLT_VERSION,
+					TCBIA_VERSION,
 					'all'
 				);
 
@@ -305,10 +305,10 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 
 				$extraData['ajax_url']        = admin_url( 'admin-ajax.php' );
 				$extraData['nonce']           = wp_create_nonce( 'loco-addon-nonces' );
-				$extraData['LATLT_URL']        = LATLT_URL;
+				$extraData['TCBIA_URL']        = TCBIA_URL;
 				$extraData['preloader_path']  = 'preloader.gif';
 				$extraData['chrome_ai_preview']      = 'chrome-ai-translator.png';
-				$extraData['extra_class']     = is_rtl() ? 'latlt-rtl' : '';
+				$extraData['extra_class']     = is_rtl() ? 'tcbia-rtl' : '';
 
 				$extraData['loco_settings_url'] = admin_url( 'admin.php?page=loco-config&action=apis' );
 
@@ -324,11 +324,11 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 			}
 		}
 
-		public function latlt_pro_already_active_notice() {
+		public function tcbia_pro_already_active_notice() {
 			echo '<div class="error loco-pro-missing" style="border:2px solid;border-color:#dc3232;"><p><strong>Loco Automatic Translate Addon Pro</strong> is already active so no need to activate free anymore.</p> </div>';
 		}
 
-		public function latlt_use_pro_latest_version() {
+		public function tcbia_use_pro_latest_version() {
 			echo '<div class="error loco-pro-missing" style="border:2px solid;border-color:#dc3232;"><p><strong>Please use <strong>Loco Automatic Translate Addon Pro</strong> latest version 1.4 or higher to use auto translate premium features.</p> </div>';
 		}
 
@@ -337,11 +337,11 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		|    Plugin activation
 		|------------------------------------------------------
 		*/
-		public function latlt_activate() {
-			update_option( 'latlt-version', LATLT_VERSION );
-			update_option( 'latlt-installDate', gmdate( 'Y-m-d h:i:s' ) );
-			update_option( 'latlt-already-rated', 'no' );
-			update_option( 'latlt-type', 'free' );
+		public function tcbia_activate() {
+			update_option( 'tcbia-version', TCBIA_VERSION );
+			update_option( 'tcbia-installDate', gmdate( 'Y-m-d h:i:s' ) );
+			update_option( 'tcbia-already-rated', 'no' );
+			update_option( 'tcbia-type', 'free' );
 		}
 
 		/*
@@ -349,11 +349,11 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		|    Plugin deactivation
 		|-------------------------------------------------------
 		*/
-		public function latlt_deactivate() {
-			delete_option( 'latlt-version' );
-			delete_option( 'latlt-installDate' );
-			delete_option( 'latlt-already-rated' );
-			delete_option( 'latlt-type' );
+		public function tcbia_deactivate() {
+			delete_option( 'tcbia-version' );
+			delete_option( 'tcbia-installDate' );
+			delete_option( 'tcbia-already-rated' );
+			delete_option( 'tcbia-type' );
 		}
 
 		/**
@@ -364,7 +364,7 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		 */
 		public function __clone() {
 			// Cloning instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'loco-ai-translator-for-loco-translate' ), '2.3' );
+			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'translate-with-chrome-built-in-ai' ), '2.3' );
 		}
 
 		/**
@@ -372,13 +372,13 @@ if ( ! class_exists( 'ChromeAITranslatorForLoco' ) ) {
 		 */
 		public function __wakeup() {
 			// Unserializing instances of the class is forbidden.
-			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'loco-ai-translator-for-loco-translate' ), '2.3' );
+			_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'translate-with-chrome-built-in-ai' ), '2.3' );
 		}
 
 	}
 
-	function LATLT() {
-		return ChromeAITranslatorForLoco::get_instance();
+	function TCBIA() {
+		return TranslatorWithChromeAI::get_instance();
 	}
-	LATLT();
+	TCBIA();
 }

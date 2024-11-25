@@ -279,7 +279,7 @@ class ChromeAiTranslator {
                 mainWrapperSelector: "#chrome-ai-translator-modal",
                 btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element #chrome_ai_translator_btn",
                 stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
-                progressBarSelector: ".latlt_progress_container",
+                progressBarSelector: ".tcbia_progress_container",
                 sourceLanguage: "en",
                 targetLanguage: locoConf.conf.locale.lang,
                 targetLanguageLabel: locoConf.conf.locale.label,
@@ -304,7 +304,7 @@ class ChromeAiTranslator {
         });
 
         jQuery(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#latlt-dialog")) {
+            if (!event.target.closest(".modal-content") && !event.target.closest("#tcbia-dialog")) {
                 TranslatorObject.stopTranslation();
             }
         });
@@ -315,14 +315,14 @@ class ChromeAiTranslator {
     });
 
     const startTransaltion = () => {
-        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .latlt_string_container");
+        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .tcbia_string_container");
         if (stringContainer[0].scrollHeight > 100) {
-            jQuery("#chrome-ai-translator-modal .latlt_translate_progress").fadeIn("slow");
+            jQuery("#chrome-ai-translator-modal .tcbia_translate_progress").fadeIn("slow");
         }
     }
     
     const beforeTranslate = (ele) => {
-        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .latlt_string_container");
+        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .tcbia_string_container");
     
         const scrollStringContainer = (position) => {
             stringContainer.scrollTop(position);
@@ -340,8 +340,8 @@ class ChromeAiTranslator {
     
     const completeTranslation = () => {
         setTimeout(() => {
-            jQuery("#chrome-ai-translator-modal .latlt_save_strings").prop("disabled", false);
-            jQuery("#chrome-ai-translator-modal .latlt_translate_progress").fadeOut("slow");
+            jQuery("#chrome-ai-translator-modal .tcbia_save_strings").prop("disabled", false);
+            jQuery("#chrome-ai-translator-modal .tcbia_translate_progress").fadeOut("slow");
         }, 2500);
     }
     

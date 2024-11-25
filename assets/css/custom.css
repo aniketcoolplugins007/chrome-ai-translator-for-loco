@@ -21,7 +21,7 @@
   border-radius: 0 0 4px 4px;
 }
 
-#latlt-dialog .latlt-heading{
+#tcbia-dialog .tcbia-heading{
   margin-bottom: 10px;
   display: inline-block;
 }
@@ -39,7 +39,7 @@ span.beta-button {
 }
 
 /* Modal Styles */
-.latlt_custom_model {
+.tcbia_custom_model {
   display: none;
   position: fixed;
   z-index: 99999;
@@ -50,7 +50,7 @@ span.beta-button {
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-.latlt_custom_model .modal-content {
+.tcbia_custom_model .modal-content {
   position: relative;
   background-color: #fefefe;
   width: 80%;
@@ -77,7 +77,7 @@ span.beta-button {
 }
 
 /* Header Styles */
-.latlt_custom_model .modal-header {
+.tcbia_custom_model .modal-header {
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -87,7 +87,7 @@ span.beta-button {
   position: relative;
 }
 
-.latlt_custom_model .modal-header h2 {
+.tcbia_custom_model .modal-header h2 {
   display: inline-block;
   font-size: 1.2rem;
   color: #fff;
@@ -96,7 +96,7 @@ span.beta-button {
 }
 
 /* The Close Button */
-.latlt_custom_model .modal-header .close {
+.tcbia_custom_model .modal-header .close {
   color: white;
   font-size: 28px;
   font-weight: bold;
@@ -105,15 +105,15 @@ span.beta-button {
   top: 20px;
 }
 
-.latlt_custom_model .modal-header .close:hover,
-.latlt_custom_model .modal-header .close:focus {
+.tcbia_custom_model .modal-header .close:hover,
+.tcbia_custom_model .modal-header .close:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
 }
 
 /* Action Buttons */
-.latlt_custom_model .latlt_actions {
+.tcbia_custom_model .tcbia_actions {
   margin: 8px;
   position: absolute;
   top: 10px;
@@ -137,31 +137,31 @@ span.beta-button {
 }
 
 /* Statistics Styles */
-.latlt_custom_model .latlt_stats {
+.tcbia_custom_model .tcbia_stats {
   padding: 0;
   margin: 5px 160px 5px 0;
   width: calc(100% - 160px);
 }
 
-.latlt_custom_model .modal-footer .latlt_stats {
+.tcbia_custom_model .modal-footer .tcbia_stats {
   margin: 22px 160px 5px 0;
 }
 
-.latlt_custom_model .latlt_stats a {
+.tcbia_custom_model .tcbia_stats a {
   color: #fff936;
 }
 
 /* Modal Body Styles */
-.latlt_custom_model .modal-body {
+.tcbia_custom_model .modal-body {
   padding: 2px 16px;
   position: relative;
 }
 
-.latlt_custom_model .notice-dismiss {
+.tcbia_custom_model .notice-dismiss {
   padding: 0;
 }
 
-.latlt_custom_model h3 {
+.tcbia_custom_model h3 {
   font-size: 22px;
   padding: 0;
   margin: 1.5rem 0;
@@ -173,7 +173,7 @@ span.beta-button {
 }
 
 /* String Container Styles */
-#chrome-ai-translator-modal.latlt_custom_model .latlt_string_container {
+#chrome-ai-translator-modal.tcbia_custom_model .tcbia_string_container {
   overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - 355px);
@@ -182,7 +182,7 @@ span.beta-button {
 }
 
 /* Table Styles */
-.latlt_custom_model table {
+.tcbia_custom_model table {
   border-spacing: 0;
   border-collapse: collapse;
   width: 100%;
@@ -192,14 +192,14 @@ span.beta-button {
   margin: 0;
 }
 
-.latlt_custom_model table td:first-child,
-.latlt_custom_model table th:first-child {
+.tcbia_custom_model table td:first-child,
+.tcbia_custom_model table th:first-child {
   width: 60px;
   text-align: center;
 }
 
-.latlt_custom_model table td,
-.latlt_custom_model table th {
+.tcbia_custom_model table td,
+.tcbia_custom_model table th {
   border: 1px solid #ddd;
   padding: 4px;
   height: 26px;
@@ -212,7 +212,7 @@ span.beta-button {
 }
 
 /* Translate Progress Styles */
-.latlt_custom_model .latlt_translate_progress {
+.tcbia_custom_model .tcbia_translate_progress {
   position: absolute;
   display: none;
   top: 0;
@@ -231,7 +231,7 @@ span.beta-button {
   /* padding-top: 30px; */
 }
 
-.latlt_progress_container {
+.tcbia_progress_container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -240,7 +240,7 @@ span.beta-button {
   flex-direction: column;
 }
 
-.latlt_custom_model .modal-footer {
+.tcbia_custom_model .modal-footer {
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
@@ -324,20 +324,20 @@ html.merge-translations:before {
 }
 
 @media screen and (max-width: 769px) {
-  .latlt_custom_model .latlt_string_container {
+  .tcbia_custom_model .tcbia_string_container {
     height: calc(100vh - 570px);
   }
 
-  .latlt_custom_model .modal-header h2 {
+  .tcbia_custom_model .modal-header h2 {
     margin-bottom: 0px;
   }
 
-  .latlt_custom_model .latlt_save_strings {
+  .tcbia_custom_model .tcbia_save_strings {
     line-height: 20px;
     min-height: 30px !important;
   }
 
-  .modal-header .latlt_stats{
+  .modal-header .tcbia_stats{
     margin: 5px 160px 5px 0 !important;
   }
 }
@@ -347,25 +347,25 @@ html.merge-translations:before {
     font-size: 15px;
     line-height: 2.5;
   }
-  .modal-header .latlt_stats{
+  .modal-header .tcbia_stats{
     margin: -12px 160px 5px 0;
   }
 }
 
 /* For RTL dailog */
-div.ui-dialog[aria-describedby="latlt-dialog"].latlt-rtl{
+div.ui-dialog[aria-describedby="tcbia-dialog"].tcbia-rtl{
   left: 50% !important;
   top: 50%!important;
   transform: translate(-50%, -50%);
   right: auto;
 }
 
-.latlt_custom_model.latlt-rtl .latlt_actions{
+.tcbia_custom_model.tcbia-rtl .tcbia_actions{
   right: auto;
   left: 40px;
   }
   
-.latlt_custom_model.latlt-rtl .modal-header .close{
+.tcbia_custom_model.tcbia-rtl .modal-header .close{
   right: auto;
   left: 10px;
   } 
