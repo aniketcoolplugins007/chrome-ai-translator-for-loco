@@ -8,6 +8,8 @@ class ChromeAiTranslator {
     // Constructor to initialize the translator with options
     constructor(options) {
         this.btnSelector = options.btnSelector || false; // Selector for the button that triggers translation
+        this.btnClass = options.btnClass || false; // Class for the button
+        this.btnText = options.btnText || `Translate To ${options.targetLanguageLabel}`; // Text for the button
         this.stringSelector = options.stringSelector || false; // Selector for the elements containing strings to translate
         this.progressBarSelector = options.progressBarSelector || false; // Selector for the progress bar element
         this.onStartTranslationProcess = options.onStartTranslationProcess || (() => { }); // Callback for when translation starts
@@ -44,7 +46,7 @@ class ChromeAiTranslator {
 
         // Handle case for language pack after download
         if (languageSupported === "after-download") {
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please install the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack to proceed. For detailed instructions, please refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation here</a>.</span>`);
+            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please install the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack to proceed.To install the language pack, visit <strong>chrome://on-device-translation-internals</strong>. For further assistance, refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation</a>.</span>`);
             jQuery("#chrome-ai-translator_settings_btn");
             this.onLanguageError(message);
             return {};
@@ -52,7 +54,7 @@ class ChromeAiTranslator {
 
         // Handle case for language pack not readily available
         if (languageSupported !== 'readily') {
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">We kindly request that you verify the installation of the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack in your browser, as well as its inclusion in your browser's preferred language settings. To install the language pack, please navigate to <a href="chrome://on-device-translation-internals/" target="_blank">this link</a>. For additional guidance, you may refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation here</a>.</span>`);
+            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please ensure that the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack is installed and set as a preferred language in your browser. To install the language pack, visit <strong>chrome://on-device-translation-internals</strong>. For further assistance, refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation</a>.</span>`);
             this.onLanguageError(message);
             return {};
         }  
@@ -69,6 +71,7 @@ class ChromeAiTranslator {
 
     // Method to initialize the translation process
     init = async () => {
+        this.appendBtn();
         this.translationStart = false; // Flag to indicate if translation has started
         this.completedTranslateIndex = 0; // Index of the last completed translation
         this.completedCharacterCount = 0; // Count of characters translated
@@ -77,6 +80,10 @@ class ChromeAiTranslator {
             this.addProgressBar(); // Add progress bar to the UI
         }
     };
+
+    appendBtn = () => {
+        this.translateBtn = jQuery(this.btnSelector).append(`<button class="button button-primary${this.btnClass ? ' ' + this.btnClass : ''}">${this.btnText}</button>`);
+    }
 
     // Method to check the status of the language support
     langStatus = async () => {
@@ -108,7 +115,6 @@ class ChromeAiTranslator {
         if (!this.stringSelector || jQuery(this.stringSelector).length === 0) return this.onLanguageError("The string selector is missing. Please provide a valid selector for the strings to be translated.");
 
         this.translateStatus = true; // Set translation status to true
-        this.translateBtn = jQuery(this.btnSelector); // Get the translation button
         this.translateBtn.off("click"); // Clear previous click handlers
         this.translateBtn.prop("disabled", false); // Enable the button
 
@@ -243,6 +249,8 @@ class ChromeAiTranslator {
  * This method initializes the translator with the following configuration options:
  * 
  * btnSelector: Selector for the button that triggers the translation process.
+ * btnClass: Class for custom styling the button
+ * btnText: Text for the button
  * stringSelector: Selector for the elements containing the strings to be translated.
  * progressBarSelector: Selector for the progress bar element to show translation progress.
  * sourceLanguage: The language code for the language to translate from (e.g., "es" for Spanish).
@@ -256,6 +264,8 @@ class ChromeAiTranslator {
 // const chromeAiTranslatorObject = ChromeAiTranslator.Object(
 //     {
 //         btnSelector: ".translator-container .translator-button", // Button Class, Id or Selector
+//         btnClass: "Btn_custom_class", // Button Class for custom styling
+//         btnText: "Translate To French", // Button Text
 //         stringSelector: ".translator-body .translation-item", // String Translate Element Class, Id or Selector
 //         progressBarSelector: ".translator-progress-bar", // Progress Bar Class, Id or Selector
 //         sourceLanguage: "es", // Source Language Code
@@ -269,7 +279,6 @@ class ChromeAiTranslator {
 // );
 // chromeAiTranslatorObject.init();
 
-
 // Call ChromeAiTranslator Object and start translation
 ((jQuery) => {
     jQuery(document).ready(async () => {
@@ -277,7 +286,9 @@ class ChromeAiTranslator {
         const TranslatorObject = await ChromeAiTranslator.Object(
             {
                 mainWrapperSelector: "#chrome-ai-translator-modal",
-                btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element #chrome_ai_translator_btn",
+                btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element",
+                btnClass: "chrome_ai_translator_btn",
+                btnText: "Translate To " + locoConf.conf.locale.label,
                 stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
                 progressBarSelector: ".aitwp_progress_container",
                 sourceLanguage: "en",

@@ -436,7 +436,7 @@
             return `
                 <div class="translator-widget ${widgetType}">
                     <h3 class="choose-lang">Translate with Chrome Bulit-in AI <span class="dashicons-before dashicons-translation"></span></h3>
-                    <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate to ${locoConf.conf.locale.label}</button></div>
+                    <div id="chrome_ai_translator_element" Id="chrome_ai_translator_btn"></div>
                 </div>`;
         }
         return '';

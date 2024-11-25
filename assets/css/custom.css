@@ -274,14 +274,14 @@ html.merge-translations:before {
   border: 6px solid #5cb85c;
 }
 
-#chrome_ai_translator_btn:disabled {
+.chrome_ai_translator_btn:disabled {
   background: #f3f3f3;
   border-color: #d7d7d7;
   color: #a3a3a3;
   cursor: not-allowed;
 }
 
-#chrome_ai_translator_btn {
+.chrome_ai_translator_btn {
   padding: .4rem;
   border: 1px solid #2271b1;
   background: transparent;
@@ -292,12 +292,12 @@ html.merge-translations:before {
   transition: all .3s ease;
 }
 
-#chrome_ai_translator_btn:hover:not(:disabled) {
+.chrome_ai_translator_btn:hover:not(:disabled) {
   background: #2271b1;
   color: white;
 }
 
-#chrome_ai_translator_btn:focus:not(:disabled) {
+.chrome_ai_translator_btn:focus:not(:disabled) {
   color: white;
   box-shadow: 0 0 0 1px #fff,0 0 0 3px #2271b1;
   background-color: #135e96;
