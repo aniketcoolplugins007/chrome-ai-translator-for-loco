@@ -52,7 +52,7 @@ class ChromeAiTranslator {
 
         // Handle case for language pack not readily available
         if (languageSupported !== 'readily') {
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please confirm that the <strong>${this.targetLanguageLabel}(${this.targetLanguage})</strong> language pack is installed in your browser and included in your browser's preferred language settings. <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">Instructions here</a></span>`);
+            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">We kindly request that you verify the installation of the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack in your browser, as well as its inclusion in your browser's preferred language settings. To install the language pack, please navigate to <a href="chrome://on-device-translation-internals/" target="_blank">this link</a>. For additional guidance, you may refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation here</a>.</span>`);
             this.onLanguageError(message);
             return {};
         }  
@@ -279,7 +279,7 @@ class ChromeAiTranslator {
                 mainWrapperSelector: "#chrome-ai-translator-modal",
                 btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element #chrome_ai_translator_btn",
                 stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
-                progressBarSelector: ".tcbia_progress_container",
+                progressBarSelector: ".aitwp_progress_container",
                 sourceLanguage: "en",
                 targetLanguage: locoConf.conf.locale.lang,
                 targetLanguageLabel: locoConf.conf.locale.label,
@@ -304,7 +304,7 @@ class ChromeAiTranslator {
         });
 
         jQuery(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#tcbia-dialog")) {
+            if (!event.target.closest(".modal-content") && !event.target.closest("#aitwp-dialog")) {
                 TranslatorObject.stopTranslation();
             }
         });
@@ -315,14 +315,14 @@ class ChromeAiTranslator {
     });
 
     const startTransaltion = () => {
-        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .tcbia_string_container");
+        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .aitwp_string_container");
         if (stringContainer[0].scrollHeight > 100) {
-            jQuery("#chrome-ai-translator-modal .tcbia_translate_progress").fadeIn("slow");
+            jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeIn("slow");
         }
     }
     
     const beforeTranslate = (ele) => {
-        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .tcbia_string_container");
+        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .aitwp_string_container");
     
         const scrollStringContainer = (position) => {
             stringContainer.scrollTop(position);
@@ -340,9 +340,9 @@ class ChromeAiTranslator {
     
     const completeTranslation = () => {
         setTimeout(() => {
-            jQuery("#chrome-ai-translator-modal .tcbia_save_strings").prop("disabled", false);
-            jQuery("#chrome-ai-translator-modal .tcbia_translate_progress").fadeOut("slow");
-        }, 2500);
+            jQuery("#chrome-ai-translator-modal .aitwp_save_strings").prop("disabled", false);
+            jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeOut("slow");
+        }, 4000);
     }
     
     const languageError = (message) => {

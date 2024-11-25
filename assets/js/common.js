@@ -1,7 +1,7 @@
 ((window, $) => {
     // Get Loco Translate global object and plugin configuration object.
     const { locoConf } = window;
-    const { ajax_url: ajaxUrl, nonce, TCBIA_URL, extra_class: rtlClass } = window.extradata;
+    const { ajax_url: ajaxUrl, nonce, AITWP_URL, extra_class: rtlClass } = window.extradata;
 
     const initialize = async () => {
         onLoad();
@@ -23,7 +23,7 @@
             
             setupEventListeners();
 
-            jQuery('.tcbia_settings_btn').on('click', (e) => {
+            jQuery('.aitwp_settings_btn').on('click', (e) => {
                 const widgetId=e.currentTarget.dataset.widgetType;
                 
                 showModalBox(widgetId);
@@ -34,15 +34,15 @@
     const showModalBox = (widgetId) => {
         const modelContainer = jQuery(`#${widgetId}`);
 
-        modelContainer.find(".tcbia_actions > .tcbia_save_strings").prop("disabled", true);
+        modelContainer.find(".aitwp_actions > .aitwp_save_strings").prop("disabled", true);
         localStorage.setItem("lang", this.defaultLang);
 
         if (!isLanguageSupported(locoConf.conf.locale.lang)) {
             showUnsupportedLanguageMessage(modelContainer);
         } else {
-            jQuery("#tcbia-dialog").dialog("close");
+            jQuery("#aitwp-dialog").dialog("close");
             modelContainer.fadeIn("slow");
-            jQuery(".tcbia_custom_model .tcbia_translate_progress").hide();
+            jQuery(".aitwp_custom_model .aitwp_translate_progress").hide();
         }
     };
     
@@ -57,11 +57,11 @@
     };
 
     const showUnsupportedLanguageMessage = (modelContainer) => {
-        jQuery("#tcbia-dialog").dialog("close");
+        jQuery("#aitwp-dialog").dialog("close");
         modelContainer.find(".notice-container")
             .addClass('notice inline notice-warning')
             .html("Chrome AI Translator does not support this language.");
-        modelContainer.find(".tcbia_string_container, .choose-lang, .tcbia_save_strings, #ytWidget, .translator-widget, .notice-info, .is-dismissible").hide();
+        modelContainer.find(".aitwp_string_container, .choose-lang, .aitwp_save_strings, #ytWidget, .translator-widget, .notice-info, .is-dismissible").hide();
         modelContainer.fadeIn("slow");
     };
 
@@ -72,7 +72,7 @@
         settingsModel(['chrome-ai-translator']);
         $("#cool-auto-translate-btn").on("click", openSettingsModel);
         $("button.icon-robot[data-loco='auto']").on("click", onAutoTranslateClick);
-        $(".tcbia_save_strings").on("click", onSaveClick);
+        $(".aitwp_save_strings").on("click", onSaveClick);
     };
 
     const addStringsInModal = (allStrings) => {
@@ -84,7 +84,7 @@
             $(".notice-container")
                 .addClass('notice inline notice-warning')
                 .html("There is no plain string available for translations.");
-            $(".tcbia_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
+            $(".aitwp_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
         }
     };
 
@@ -104,7 +104,7 @@
         };
         const regex = /(\%\s*\d+\s*\$?\s*[a-z0-9])/gi;
 
-        $(".tcbia_strings_table tbody tr").each(function () {
+        $(".aitwp_strings_table tbody tr").each(function () {
             const source = $(this).find("td.source").text();
             const target = $(this).find("td.target").text();
             const improvedTarget = strtr(target, rpl).replace(regex, match => match.replace(/\s/g, '').toLowerCase());
@@ -113,9 +113,9 @@
             translatedObj.push({ source: improvedSource, target: improvedTarget });
         });
 
-        const projectId = $(this).parents(".tcbia_custom_model").find("#project_id").val();
+        const projectId = $(this).parents(".aitwp_custom_model").find("#project_id").val();
         saveTranslatedStrings(translatedObj, projectId);
-        $(".tcbia_custom_model").fadeOut("slow");
+        $(".aitwp_custom_model").fadeOut("slow");
         $("html").addClass("merge-translations");
         updateLocoModel();
     };
@@ -271,7 +271,7 @@
     };
 
     const openSettingsModel = () => {
-        $("#tcbia-dialog").dialog({
+        $("#aitwp-dialog").dialog({
             dialogClass: rtlClass,
             resizable: false,
             height: "auto",
@@ -287,13 +287,13 @@
 
     const stringModalEvents = () => {
         $(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#tcbia-dialog")) {
-                $(".tcbia_custom_model").hide();
+            if (!event.target.closest(".modal-content") && !event.target.closest("#aitwp-dialog")) {
+                $(".aitwp_custom_model").hide();
             }
         });
     
-        $(".tcbia_custom_model").find(".close").on("click", () => {
-            $(".tcbia_custom_model").fadeOut("slow");
+        $(".aitwp_custom_model").find(".close").on("click", () => {
+            $(".aitwp_custom_model").fadeOut("slow");
         });
     };
 
@@ -324,20 +324,19 @@
             }
         }
 
-        $(".tcbia_strings_table > tbody.tcbia_strings_body").html(html);
+        $(".aitwp_strings_table > tbody.aitwp_strings_body").html(html);
     };
 
     const settingsModel = (widgetTypes = []) => {
-        const chromeAiPreviewImg = `${TCBIA_URL}assets/images/${window.extradata['chrome_ai_preview']}`;
         const modelHTML = widgetTypes.reduce((html, widgetType) => {
             if (widgetType === 'chrome-ai-translator') {
                 return html + `
-                <div id="tcbia-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
-                    <div class="tcbia-settings">
-                        <strong class="tcbia-heading">Translate Using Local AI Translator</strong>
+                <div id="aitwp-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
+                    <div class="aitwp-settings">
+                        <strong class="aitwp-heading">Translate Using Local AI Translator</strong>
                         <div class="inputGroup">
-                            <button id="${widgetType}_settings_btn" class="button button-primary tcbia_settings_btn" data-widget-type="${widgetType}-modal">Local AI Translator</button>
-                            <br/><a href="https://developer.chrome.com/docs/ai/translator-api" target="_blank">Powered by <img src="${chromeAiPreviewImg}" alt="powered by Chrome AI Translator" width="25"> AI Translator</a>
+                            <button id="${widgetType}_settings_btn" class="button button-primary aitwp_settings_btn" data-widget-type="${widgetType}-modal">Local AI Translator</button>
+                            <br/><a href="https://developer.chrome.com/docs/ai/translator-api" target="_blank">Powered by  AI Translate API</a>
                         </div>
                     </div>
                 </div>`;
@@ -351,12 +350,12 @@
     const createStringsModal = (projectId, widgetType) => {
         const { wrapperCls, headerCls, bodyCls, footerCls, wrapperId } = getWidgetClasses(widgetType);
         const modelHTML = `
-            <div id="${wrapperId}" class="modal tcbia_custom_model ${wrapperCls}${rtlClass ? ` ${rtlClass}` : ''}">
+            <div id="${wrapperId}" class="modal aitwp_custom_model ${wrapperCls}${rtlClass ? ` ${rtlClass}` : ''}">
                 <div class="modal-content">
                     <input type="hidden" id="project_id" value="${projectId}"> 
-                    ${modelHeaderHTML(widgetType, headerCls)}   
+                    ${modelHeaderHTML(headerCls)}   
                     ${modelBodyHTML(widgetType, bodyCls)}   
-                    ${modelFooterHTML(widgetType, footerCls)}   
+                    ${modelFooterHTML(footerCls)}   
                 </div>
             </div>`;
 
@@ -373,33 +372,40 @@
 
     const modelBodyHTML = (widgetType, bodyCls) => `
         <div class="modal-body ${bodyCls}">
-            <div class="tcbia_translate_progress">
-                <div class="tcbia_progress_container">
+            <div class="aitwp_translate_progress">
+                <div class="aitwp_progress_container">
                     Automatic translation is in progress....<br/>
                     It will take a few minutes, enjoy ☕ coffee in this time!<br/><br/>
                     Please do not leave this window or browser tab while the translation is in progress...
                 </div>
             </div>
             ${translatorWidget(widgetType)}
-            <div class="tcbia_string_container">
-                <table class="scrolldown tcbia_strings_table">
+            <div class="aitwp_string_container">
+                <table class="scrolldown aitwp_strings_table">
                     <thead>
                         <th>S.No</th>
                         <th>Source Text</th>
                         <th>Translation</th>
                     </thead>
-                    <tbody class="tcbia_strings_body"></tbody>
+                    <tbody class="aitwp_strings_body"></tbody>
                 </table>
             </div>
             <div class="notice-container"></div>
         </div>`;
 
-    const modelHeaderHTML = (widgetType, headerCls) => `
+    const modelHeaderHTML = (headerCls) => `
         <div class="modal-header ${headerCls}">
             <span class="close">&times;</span>
             <h2>Step 2 - Start Automatic Translation Process</h2>
-            <div class="tcbia_actions">
-                <button class="tcbia_save_strings button button-primary" disabled="true">Merge Translation</button>
+            <div class="aitwp_actions">
+                <button class="aitwp_save_strings button button-primary" disabled="true">Merge Translation</button>
+            </div>
+            <div style="display:none" class="aitwp_stats hidden">
+                Wahooo! You have saved your valuable time via auto translating 
+                <strong class="totalChars"></strong> characters  using 
+                <strong>
+                    Chrome AI Translator for Loco Translate
+                </strong>
             </div>
         </div>
         <div class="notice inline notice-info is-dismissible">
@@ -409,20 +415,27 @@
         <div class="notice inline notice-info is-dismissible">
             Machine translations are not 100% correct.
             Please verify strings before using on the production website.
-        </div>`;
+        </div>`;    
 
-    const modelFooterHTML = (widgetType, footerCls) => `
+    const modelFooterHTML = (footerCls) => `
         <div class="modal-footer ${footerCls}">
-            <div class="tcbia_actions">
-                <button class="tcbia_save_strings button button-primary" disabled="true">Merge Translation</button>
+            <div class="aitwp_actions">
+                <button class="aitwp_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
+            <div style="display:none" class="aitwp_stats">
+            Wahooo! You have saved your valuable time via auto translating 
+            <strong class="totalChars"></strong> characters  using 
+            <strong>
+                Chrome AI Translator for Loco Translate
+            </strong>
+        </div>
         </div>`;
 
     const translatorWidget = (widgetType) => {
         if (widgetType === "chrome-ai-translator") {
             return `
                 <div class="translator-widget ${widgetType}">
-                    <h3 class="choose-lang">Translate Using Chrome Local AI Translator <span class="dashicons-before dashicons-translation"></span></h3>
+                    <h3 class="choose-lang">Translate with Chrome Bulit-in AI <span class="dashicons-before dashicons-translation"></span></h3>
                     <div id="chrome_ai_translator_element"><button id="chrome_ai_translator_btn">Translate to ${locoConf.conf.locale.label}</button></div>
                 </div>`;
         }
