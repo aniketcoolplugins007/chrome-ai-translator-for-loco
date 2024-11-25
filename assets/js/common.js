@@ -48,7 +48,7 @@
     
     const isLanguageSupported = (lang) => {
         const supportedLanguages = new Set([
-            'es', 'js', 'ar', 'bn', 'de', 'fr', 'hi', 'it', 'ko', 'nl', 
+            'es', 'ja', 'ar', 'bn', 'de', 'fr', 'hi', 'it', 'ko', 'nl', 
             'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh', 'zh-hant', 'bg', 
             'cs', 'da', 'el', 'fi', 'hr', 'hu', 'id', 'iw', 'lt', 'no', 
             'ro', 'sk', 'sl', 'sv', 'uk', 'en-zh'
