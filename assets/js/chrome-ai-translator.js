@@ -196,7 +196,7 @@ class ChromeAiTranslator {
         if (index === this.translateStringEle.length - 1) {
             this.translateBtn.prop("disabled", true); // Disable the button
             this.onComplete({characterCount: this.completedCharacterCount}); // Call the complete callback
-            jQuery(this.progressBarSelector).find(".chrome-ai-translator-strings-count").show().find(".totalChars").html(this.completedCharacterCount);
+            jQuery(this.progressBarSelector).find(".chrome-ai-translator-strings-count").show().find(".totalChars").text(this.completedCharacterCount);
         }
     };
 
