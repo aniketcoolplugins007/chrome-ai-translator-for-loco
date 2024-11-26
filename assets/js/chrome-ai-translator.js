@@ -210,7 +210,7 @@ class ChromeAiTranslator {
                     Wahooo! You have saved your valuable time via auto translating 
                     <strong class="totalChars">0</strong> characters using 
                     <strong>
-                        Local AI Translator
+                        Chrome AI Translator
                     </strong>
                 </div>
             `);

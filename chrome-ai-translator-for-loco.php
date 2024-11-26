@@ -289,8 +289,9 @@ if ( ! class_exists( 'Ai_Auto_Trasnslator_For_Wordpress' ) ) {
 		function aitwp_enqueue_scripts( $hook ) {
 			// load assets only on editor page
 			if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'file-edit' ) {
-				wp_register_script( 'loco-addon-custom', AITWP_URL . 'assets/js/common.min.js', array( 'loco-translate-admin' ), AITWP_VERSION, true );
-				wp_register_script( 'chrome-ai-translator-for-loco', AITWP_URL . 'assets/js/chrome-ai-translator.min.js', array( 'loco-addon-custom' ), AITWP_VERSION, true );
+				wp_register_script( 'aitwp-local-ai-translator', AITWP_URL . 'assets/js/chrome-ai-translator.min.js', array(), AITWP_VERSION, true );
+				wp_register_script( 'aitwp-common', AITWP_URL . 'assets/js/common.min.js', array( 'loco-translate-admin','aitwp-local-ai-translator' ), AITWP_VERSION, true );
+				wp_register_script( 'aitwp-save-translation', AITWP_URL . 'assets/js/save-translation.min.js', array( 'aitwp-common' ), AITWP_VERSION, true );
 				wp_register_style(
 					'loco-addon-custom-css',
 					AITWP_URL . 'assets/css/custom.min.css',
@@ -299,8 +300,9 @@ if ( ! class_exists( 'Ai_Auto_Trasnslator_For_Wordpress' ) ) {
 					'all'
 				);
 
-				wp_enqueue_script( 'loco-addon-custom' );
-				wp_enqueue_script( 'chrome-ai-translator-for-loco' );
+				wp_enqueue_script( 'aitwp-common' );
+				wp_enqueue_script( 'aitwp-local-ai-translator' );
+				wp_enqueue_script( 'aitwp-save-translation' );
 				wp_enqueue_style( 'loco-addon-custom-css' );
 
 				$extraData['ajax_url']        = admin_url( 'admin-ajax.php' );
@@ -311,7 +313,7 @@ if ( ! class_exists( 'Ai_Auto_Trasnslator_For_Wordpress' ) ) {
 
 				$extraData['loco_settings_url'] = admin_url( 'admin.php?page=loco-config&action=apis' );
 
-				wp_localize_script( 'loco-addon-custom', 'extradata', $extraData );
+				wp_localize_script( 'aitwp-common', 'aitwpData', $extraData );
 				// copy object
 				wp_add_inline_script(
 					'loco-translate-admin',
