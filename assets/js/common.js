@@ -196,26 +196,6 @@ class LocoTranslate {
         jQuery(".aitwp_strings_table > tbody.aitwp_strings_body").html(html);
     }
 
-    // settingsModel(widgetTypes = []) {
-    //     const modelHTML = widgetTypes.reduce((html, widgetType) => {
-    //         if (widgetType === 'chrome-ai-translator') {
-    //             return html + `
-    //             <div id="aitwp-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
-    //                 <div class="aitwp-settings">
-    //                     <strong class="aitwp-heading">Translate Using Local AI Translator</strong>
-    //                     <div class="inputGroup">
-    //                         <button id="${widgetType}_settings_btn" class="button button-primary aitwp_settings_btn" data-widget-type="${widgetType}-modal">Local AI Translator</button>
-    //                         <br/><a href="https://developer.chrome.com/docs/ai/translator-api" target="_blank">Powered by  AI Translate API</a>
-    //                     </div>
-    //                 </div>
-    //             </div>`;
-    //         }
-    //         return html;
-    //     }, '');
-
-    //     jQuery("body").append(modelHTML);
-    // }
-
     createStringsModal(projectId, widgetType) {
         const { wrapperCls, headerCls, bodyCls, footerCls, wrapperId } = this.getWidgetClasses(widgetType);
         const modelHTML = `
@@ -313,7 +293,7 @@ class LocoTranslate {
             return `
                 <div class="translator-widget ${widgetType}">
                     <h3 class="choose-lang">Translate with Chrome Built-in AI <span class="dashicons-before dashicons-translation"></span></h3>
-                    <div id="chrome_ai_translator_element" Id="chrome_ai_translator_btn"></div>
+                    <div id="chrome_ai_translator_element"></div>
                 </div>`;
         }
         return '';
