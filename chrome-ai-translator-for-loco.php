@@ -325,14 +325,6 @@ if ( ! class_exists( 'Ai_Auto_Trasnslator_For_Wordpress' ) ) {
 			}
 		}
 
-		public function aitwp_pro_already_active_notice() {
-			echo '<div class="error loco-pro-missing" style="border:2px solid;border-color:#dc3232;"><p><strong>Loco Automatic Translate Addon Pro</strong> is already active so no need to activate free anymore.</p> </div>';
-		}
-
-		public function aitwp_use_pro_latest_version() {
-			echo '<div class="error loco-pro-missing" style="border:2px solid;border-color:#dc3232;"><p><strong>Please use <strong>Loco Automatic Translate Addon Pro</strong> latest version 1.4 or higher to use auto translate premium features.</p> </div>';
-		}
-
 		/*
 		|------------------------------------------------------
 		|    Plugin activation

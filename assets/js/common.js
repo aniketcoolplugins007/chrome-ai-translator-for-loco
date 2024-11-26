@@ -302,7 +302,7 @@ class LocoTranslate {
             Wahooo! You have saved your valuable time via auto translating 
             <strong class="totalChars"></strong> characters  using 
             <strong>
-                Chrome AI Translator for Loco Translate
+                Chrome AI Translator
             </strong>
         </div>
         </div>`;
@@ -346,8 +346,8 @@ class LocoTranslate {
     completeTranslation(data) {
         jQuery("#chrome-ai-translator-modal .aitwp_stats").show();
         jQuery("#chrome-ai-translator-modal .aitwp_stats .totalChars").html(data.characterCount);
+        jQuery("#chrome-ai-translator-modal .aitwp_save_strings").prop("disabled", false);
         setTimeout(() => {
-            jQuery("#chrome-ai-translator-modal .aitwp_save_strings").prop("disabled", false);
             jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeOut("slow");
         }, 4000);
     }
