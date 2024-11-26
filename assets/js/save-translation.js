@@ -74,7 +74,7 @@ class SaveTranslation{
                 locoModelApisBatch.find("select#auto-api").hide();
                 const currentState = jQuery("select#auto-api option[value='loco_auto']").prop("selected", "selected");
                 locoModelApisBatch.find("select#auto-api").val(currentState.val());
-                locoModel.find(".ui-dialog-titlebar .ui-dialog-title").html("Step 3 - Add Translations into Editor and Save");
+                locoModel.find(".ui-dialog-titlebar .ui-dialog-title").html("Step 2 - Add Translations into Editor and Save");
                 locoModelApisBatch.find("button.button-primary span").html("Start Adding Process").on("click", function () {
                     jQuery(this).find('span').html("Adding...");
                 });

@@ -29,7 +29,7 @@ class ChromeAiTranslator {
         // Handle unsupported language
         if (languageSupported === "language-not-supported") {
             await new Promise(resolve => setTimeout(resolve, 500));
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Unfortunately, the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language is currently not supported by the Local Translator AI modal. Please check and read the docs which languages are currently supported by <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">clicking here</a>.</span>`);
+            const message = jQuery(`<span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Unfortunately, the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language is currently not supported by the Local Translator AI modal. Please check and read the docs which languages are currently supported by <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">clicking here</a>.</span>`);
             jQuery("#chrome-ai-translator_settings_btn");
             this.onLanguageError(message);
             return {};
@@ -38,7 +38,7 @@ class ChromeAiTranslator {
         // Handle API disabled case
         if (languageSupported === "api-disabled") {
             await new Promise(resolve => setTimeout(resolve, 500));
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">The Translator AI modal is currently not supported or disabled in your browser. Please enable it. For detailed instructions on how to enable the Translator AI modal in your Chrome browser, <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">click here</a>.</span>`);
+            const message = jQuery(`<span style="color: #ff4646; margin-top: .5rem; display: inline-block;">The Translator AI modal is currently not supported or disabled in your browser. Please enable it. For detailed instructions on how to enable the Translator AI modal in your Chrome browser, <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">click here</a>.</span>`);
             jQuery("#chrome-ai-translator_settings_btn");
             this.onLanguageError(message);
             return {};
@@ -46,7 +46,7 @@ class ChromeAiTranslator {
 
         // Handle case for language pack after download
         if (languageSupported === "after-download") {
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please install the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack to proceed.To install the language pack, visit <strong>chrome://on-device-translation-internals</strong>. For further assistance, refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation</a>.</span>`);
+            const message = jQuery(`<span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please install the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack to proceed.To install the language pack, visit <strong>chrome://on-device-translation-internals</strong>. For further assistance, refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation</a>.</span>`);
             jQuery("#chrome-ai-translator_settings_btn");
             this.onLanguageError(message);
             return {};
@@ -54,7 +54,7 @@ class ChromeAiTranslator {
 
         // Handle case for language pack not readily available
         if (languageSupported !== 'readily') {
-            const message = jQuery(`<br><span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please ensure that the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack is installed and set as a preferred language in your browser. To install the language pack, visit <strong>chrome://on-device-translation-internals</strong>. For further assistance, refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation</a>.</span>`);
+            const message = jQuery(`<span style="color: #ff4646; margin-top: .5rem; display: inline-block;">Please ensure that the <strong>${this.targetLanguageLabel} (${this.targetLanguage})</strong> language pack is installed and set as a preferred language in your browser. To install the language pack, visit <strong>chrome://on-device-translation-internals</strong>. For further assistance, refer to the <a href="https://developer.chrome.com/docs/ai/translator-api#bypass_language_restrictions_for_local_testing" target="_blank">documentation</a>.</span>`);
             this.onLanguageError(message);
             return {};
         }  
@@ -82,7 +82,8 @@ class ChromeAiTranslator {
     };
 
     appendBtn = () => {
-        this.translateBtn = jQuery(this.btnSelector).append(`<button class="button button-primary${this.btnClass ? ' ' + this.btnClass : ''}">${this.btnText}</button>`);
+        this.translateBtn = jQuery(`<button class="button button-primary${this.btnClass ? ' ' + this.btnClass : ''}">${this.btnText}</button>`);
+        jQuery(this.btnSelector).append(this.translateBtn);
     }
 
     // Method to check the status of the language support
@@ -127,7 +128,7 @@ class ChromeAiTranslator {
                 this.stringTranslation(this.completedTranslateIndex + 1); // Start translating the next string
             });
         } else {
-            this.onComplete(); // Call the complete callback
+            this.onComplete({translatedStringsCount: this.completedCharacterCount}); // Call the complete callback
             this.translateBtn.prop("disabled", true); // Disable the button
         }
     };
@@ -194,7 +195,7 @@ class ChromeAiTranslator {
         // If all strings are translated, complete the process
         if (index === this.translateStringEle.length - 1) {
             this.translateBtn.prop("disabled", true); // Disable the button
-            this.onComplete(); // Call the complete callback
+            this.onComplete({characterCount: this.completedCharacterCount}); // Call the complete callback
             jQuery(this.progressBarSelector).find(".chrome-ai-translator-strings-count").show().find(".totalChars").html(this.completedCharacterCount);
         }
     };
@@ -280,87 +281,3 @@ class ChromeAiTranslator {
 //     }
 // );
 // chromeAiTranslatorObject.init();
-
-// Call ChromeAiTranslator Object and start translation
-((jQuery) => {
-    jQuery(document).ready(async () => {
-        let transalationInitialize = false;
-        const TranslatorObject = await ChromeAiTranslator.Object(
-            {
-                mainWrapperSelector: "#chrome-ai-translator-modal",
-                btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element",
-                btnClass: "chrome_ai_translator_btn",
-                btnText: "Translate To " + locoConf.conf.locale.label,
-                stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
-                progressBarSelector: ".aitwp_progress_container",
-                sourceLanguage: "en",
-                targetLanguage: locoConf.conf.locale.lang,
-                targetLanguageLabel: locoConf.conf.locale.label,
-                onStartTranslationProcess: startTransaltion,
-                onComplete: completeTranslation,
-                onLanguageError: languageError,
-                onBeforeTranslate: beforeTranslate
-            }
-        );
-
-        if(!TranslatorObject.hasOwnProperty("init")) {
-            return;
-        }
-
-        jQuery(document).on("click", "#chrome-ai-translator_settings_btn", function () {
-            if (!transalationInitialize && typeof TranslatorObject.init === 'function') {
-                transalationInitialize = true;
-                TranslatorObject.init();
-            } else if (typeof TranslatorObject.reInit === 'function') {
-                TranslatorObject.reInit();
-            }
-        });
-
-        jQuery(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#aitwp-dialog")) {
-                TranslatorObject.stopTranslation();
-            }
-        });
-
-        jQuery(document).on("click", ".chrome-ai-translator-header .close", () => {
-            TranslatorObject.stopTranslation();
-        });
-    });
-
-    const startTransaltion = () => {
-        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .aitwp_string_container");
-        if (stringContainer[0].scrollHeight > 100) {
-            jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeIn("slow");
-        }
-    }
-    
-    const beforeTranslate = (ele) => {
-        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .aitwp_string_container");
-    
-        const scrollStringContainer = (position) => {
-            stringContainer.scrollTop(position);
-        };
-    
-        const stringContainerPosition = stringContainer[0].getBoundingClientRect();
-    
-        const eleTopPosition = ele.closest("tr").offsetTop;
-        const containerHeight = stringContainer.height();
-    
-        if (eleTopPosition > (containerHeight + stringContainerPosition.y)) {
-            scrollStringContainer(eleTopPosition - containerHeight + ele.offsetHeight);
-        }
-    }
-    
-    const completeTranslation = () => {
-        setTimeout(() => {
-            jQuery("#chrome-ai-translator-modal .aitwp_save_strings").prop("disabled", false);
-            jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeOut("slow");
-        }, 4000);
-    }
-    
-    const languageError = (message) => {
-        jQuery("#chrome-ai-translator_settings_btn").after(message);
-        jQuery("#chrome-ai-translator_settings_btn").attr("disabled", true);
-    }
-
-})(jQuery);

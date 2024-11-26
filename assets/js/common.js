@@ -1,80 +1,98 @@
-((window, $) => {
-    // Get Loco Translate global object and plugin configuration object.
-    const { locoConf } = window;
-    const { extra_class: rtlClass } = window.aitwpData;
+class LocoTranslate {
+    constructor() {
+        this.locoConf = window.locoConf;
+        this.rtlClass = window.aitwpData.extra_class;
+        this.defaultLang = ''; // Initialize defaultLang if needed
+        this.initialize();
+    }
 
-    const initialize = () => {
-        onLoad();
-    };
-    
-    const onLoad = async () => {
-        if (locoConf && locoConf.conf) {
-            const { conf } = locoConf;
-            const allStrings = locoConf.conf.podata;
+    initialize() {
+        this.onLoad();
+    }
+
+    async onLoad() {
+        if (this.locoConf && this.locoConf.conf) {
+            const { conf } = this.locoConf;
+            const allStrings = conf.podata;
             allStrings.shift();
             const { locale, project } = conf;
-            const projectId = generateProjectId(project, locale);
+            this.localAiInitialize = false;
 
-            createStringsModal(projectId, 'chrome-ai-translator');
+            const projectId = this.generateProjectId(project, locale);
+            this.createStringsModal(projectId, 'chrome-ai-translator');
+            this.setupEventListeners();
             
-            addStringsInModal(allStrings);
-            stringModalEvents();
+            this.translatorObject = await this.ChromeAiTranslator();
+            if(this.translatorObject.hasOwnProperty("init")) {
+                this.addStringsInModal(allStrings);
+            }
             
-            setupEventListeners();
-
-            jQuery('.aitwp_settings_btn').on('click', (e) => {
-                const widgetId=e.currentTarget.dataset.widgetType;
-                
-                showModalBox(widgetId);
-            });
+            this.stringModalEvents();
         }
-    };
+    }
 
-    const showModalBox = (widgetId) => {
+    async ChromeAiTranslator() {
+        return await ChromeAiTranslator.Object(
+            {
+                mainWrapperSelector: "#chrome-ai-translator-modal",
+                btnSelector: "#chrome-ai-translator-modal #chrome_ai_translator_element",
+                btnClass: "chrome_ai_translator_btn",
+                btnText: "Translate To " + locoConf.conf.locale.label,
+                stringSelector: ".chrome-ai-translator-body table tbody tr td.target.translate",
+                progressBarSelector: ".aitwp_progress_container",
+                sourceLanguage: "en",
+                targetLanguage: locoConf.conf.locale.lang,
+                targetLanguageLabel: locoConf.conf.locale.label,
+                onStartTranslationProcess: this.startTransaltion,
+                onComplete: this.completeTranslation,
+                onLanguageError: this.languageError,
+                onBeforeTranslate: this.beforeTranslate
+            }
+        );
+    }
+
+    showModalBox(widgetId) {
         const modelContainer = jQuery(`#${widgetId}`);
-
         modelContainer.find(".aitwp_actions > .aitwp_save_strings").prop("disabled", true);
         localStorage.setItem("lang", this.defaultLang);
-
-
-        jQuery("#aitwp-dialog").dialog("close");
+        // jQuery("#aitwp-dialog").dialog("close");
         modelContainer.fadeIn("slow");
         jQuery(".aitwp_custom_model .aitwp_translate_progress").hide();
-    };
+    }
 
-    const setupEventListeners = () => {
-        if ($("#loco-editor nav").find("#cool-auto-translate-btn").length === 0) {
-            addAutoTranslationBtn();
+    setupEventListeners() {
+        if (jQuery("#loco-editor nav").find("#cool-auto-translate-btn").length === 0) {
+            this.addAutoTranslationBtn();
         }
-        settingsModel(['chrome-ai-translator']);
-        $("#cool-auto-translate-btn").on("click", openSettingsModel);
-        $("button.icon-robot[data-loco='auto']").on("click", onAutoTranslateClick);
-        // $(".aitwp_save_strings").on("click", onSaveClick);
-    };
 
-    const addStringsInModal = (allStrings) => {
-        const plainStrArr = filterRawObject(allStrings, "plain");
+        jQuery("#cool-auto-translate-btn").on("click", this.openSettingsModel.bind(this));
+        jQuery("button.icon-robot[data-loco='auto']").on("click", this.onAutoTranslateClick.bind(this));
+    }
+
+    addStringsInModal(allStrings) {
+        const plainStrArr = filterRawObject.init(allStrings, "plain");
+
         if (plainStrArr.length > 0) {
-            printStringsInPopup(plainStrArr);
+            this.printStringsInPopup(plainStrArr);
         } else {
-            $("#ytWidget").hide();
-            $(".notice-container")
+            jQuery("#ytWidget").hide();
+            jQuery(".notice-container")
                 .addClass('notice inline notice-warning')
                 .html("There is no plain string available for translations.");
-            $(".aitwp_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
+            jQuery(".aitwp_string_container, .choose-lang, .translator-widget, .notice-info, .is-dismissible").hide();
         }
-    };
+    }
 
-    const generateProjectId = (project, locale) => {
+    generateProjectId(project, locale) {
         const { domain } = project || {};
         const { lang, region } = locale;
         return project ? `${domain}-${lang}-${region}` : `temp-${lang}-${region}`;
-    };
+    }
 
-    const onAutoTranslateClick = (e) => {
+    onAutoTranslateClick(e) {
         if (e.originalEvent) {
             const checkModal = setInterval(() => {
-                const locoModal = $(".loco-modal");
+                const locoModal = jQuery(".loco-modal");
                 const locoBatch = locoModal.find("#loco-apis-batch");
                 const locoTitle = locoModal.find(".ui-dialog-titlebar .ui-dialog-title");
 
@@ -104,82 +122,51 @@
                 }
             }, 100);
         }
-    };
+    }
 
-    const filterRawObject = (rawArray, filterType) => {
-        return rawArray.filter(item => {
-            if (item.source && !item.target) {
-                return !ValidURL(item.source) && !isHTML(item.source) && !isSpecialChars(item.source) && !isEmoji(item.source) && !item.source.includes('#') || isPlacehodersChars(item.source);
-            }
-            return false;
-        });
-    };
-
-    const ValidURL = (str) => {
-        const pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-        return pattern.test(str);
-    };
-
-    const isHTML = (str) => {
-        const rgex = /<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i;
-        return rgex.test(str);
-    };
-
-    const isSpecialChars = (str) => {
-        const rgex = /[@^{}|<>]/g;
-        return rgex.test(str);
-    };
-
-    const isEmoji = (str) => {
-        const ranges = [
-            '(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])'
-        ];
-        return str.match(ranges.join('|'));
-    };
-
-    const isPlacehodersChars = (str) => {
-        const rgex = /%s|%d/g;
-        return rgex.test(str);
-    };
-
-    const addAutoTranslationBtn = () => {
-        const existingBtn = $("#loco-editor nav").find("#cool-auto-translate-btn");
+    addAutoTranslationBtn() {
+        const existingBtn = jQuery("#loco-editor nav").find("#cool-auto-translate-btn");
         if (existingBtn.length > 0) {
             existingBtn.remove();
         }
-        const locoActions = $("#loco-editor nav").find("#loco-actions");
-        const autoTranslateBtn = $('<fieldset><button id="cool-auto-translate-btn" class="button has-icon icon-translate">Auto Translate</button></fieldset>');
+        const locoActions = jQuery("#loco-editor nav").find("#loco-actions");
+        const autoTranslateBtn = jQuery('<fieldset><button id="cool-auto-translate-btn" class="button has-icon icon-translate">Auto Translate</button></fieldset>');
         locoActions.append(autoTranslateBtn);
-    };
+    }
 
-    const openSettingsModel = () => {
-        $("#aitwp-dialog").dialog({
-            dialogClass: rtlClass,
-            resizable: false,
-            height: "auto",
-            width: 400,
-            modal: true,
-            buttons: {
-                Cancel: function () {
-                    $(this).dialog("close");
+    openSettingsModel() {
+        const widgetId = 'chrome-ai-translator-modal';
+
+        this.showModalBox(widgetId);
+
+        if (!this.localAiInitialize && typeof this.translatorObject.init === 'function') {
+            this.localAiInitialize = true;
+            this.translatorObject.init();
+        } else if (typeof this.translatorObject.reInit === 'function') {
+            this.translatorObject.reInit();
+        }
+
+    }
+
+    stringModalEvents() {
+        jQuery(window).on("click", (event) => {
+            if (!event.target.closest(".modal-content") && !event.target.closest("#cool-auto-translate-btn") && !event.target.closest(".modal-error-div")) {
+                if(this.translatorObject.hasOwnProperty("stopTranslation")) {
+                    this.translatorObject.stopTranslation();
                 }
+                jQuery(".aitwp_custom_model").hide();
             }
         });
-    };
 
-    const stringModalEvents = () => {
-        $(window).on("click", (event) => {
-            if (!event.target.closest(".modal-content") && !event.target.closest("#aitwp-dialog")) {
-                $(".aitwp_custom_model").hide();
+        jQuery(".aitwp_custom_model").find(".close").on("click", () => {
+            if(this.translatorObject.hasOwnProperty("stopTranslation")) {
+                this.translatorObject.stopTranslation();
             }
+            jQuery(".aitwp_custom_model").fadeOut("slow");
         });
-    
-        $(".aitwp_custom_model").find(".close").on("click", () => {
-            $(".aitwp_custom_model").fadeOut("slow");
-        });
-    };
+    }
 
-    const encodeHtmlEntity = (str) => {
+    encodeHtmlEntity(str) {
         var buf = [];
         for (var i = str.length - 1; i >= 0; i--) {
             buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
@@ -187,7 +174,7 @@
         return buf.join('');
     }
 
-    const printStringsInPopup = (jsonObj) => {
+    printStringsInPopup(jsonObj) {
         let html = '';
         let totalTChars = 0;
         let index = 1;
@@ -197,8 +184,8 @@
                 if (jsonObj.hasOwnProperty(key)) {
                     const sourceText = jsonObj[key].source.trim();
                     if (sourceText) {
-                        html += `<tr id="${key}"><td>${index}</td><td class="source">${encodeHtmlEntity(sourceText)}</td>`;
-                        html += `<td class="target translate">${encodeHtmlEntity(sourceText)}</td></tr>`;
+                        html += `<tr id="${key}"><td>${index}</td><td class="source">${this.encodeHtmlEntity(sourceText)}</td>`;
+                        html += `<td class="target translate">${this.encodeHtmlEntity(sourceText)}</td></tr>`;
                         index++;
                         totalTChars += sourceText.length;
                     }
@@ -206,53 +193,56 @@
             }
         }
 
-        $(".aitwp_strings_table > tbody.aitwp_strings_body").html(html);
-    };
+        jQuery(".aitwp_strings_table > tbody.aitwp_strings_body").html(html);
+    }
 
-    const settingsModel = (widgetTypes = []) => {
-        const modelHTML = widgetTypes.reduce((html, widgetType) => {
-            if (widgetType === 'chrome-ai-translator') {
-                return html + `
-                <div id="aitwp-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
-                    <div class="aitwp-settings">
-                        <strong class="aitwp-heading">Translate Using Local AI Translator</strong>
-                        <div class="inputGroup">
-                            <button id="${widgetType}_settings_btn" class="button button-primary aitwp_settings_btn" data-widget-type="${widgetType}-modal">Local AI Translator</button>
-                            <br/><a href="https://developer.chrome.com/docs/ai/translator-api" target="_blank">Powered by  AI Translate API</a>
-                        </div>
-                    </div>
-                </div>`;
-            }
-            return html;
-        }, '');
+    // settingsModel(widgetTypes = []) {
+    //     const modelHTML = widgetTypes.reduce((html, widgetType) => {
+    //         if (widgetType === 'chrome-ai-translator') {
+    //             return html + `
+    //             <div id="aitwp-dialog" title="Step 1 - Select Translation Provider" style="display:none;">
+    //                 <div class="aitwp-settings">
+    //                     <strong class="aitwp-heading">Translate Using Local AI Translator</strong>
+    //                     <div class="inputGroup">
+    //                         <button id="${widgetType}_settings_btn" class="button button-primary aitwp_settings_btn" data-widget-type="${widgetType}-modal">Local AI Translator</button>
+    //                         <br/><a href="https://developer.chrome.com/docs/ai/translator-api" target="_blank">Powered by  AI Translate API</a>
+    //                     </div>
+    //                 </div>
+    //             </div>`;
+    //         }
+    //         return html;
+    //     }, '');
 
-        $("body").append(modelHTML);
-    };
+    //     jQuery("body").append(modelHTML);
+    // }
 
-    const createStringsModal = (projectId, widgetType) => {
-        const { wrapperCls, headerCls, bodyCls, footerCls, wrapperId } = getWidgetClasses(widgetType);
+    createStringsModal(projectId, widgetType) {
+        const { wrapperCls, headerCls, bodyCls, footerCls, wrapperId } = this.getWidgetClasses(widgetType);
         const modelHTML = `
-            <div id="${wrapperId}" class="modal aitwp_custom_model ${wrapperCls}${rtlClass ? ` ${rtlClass}` : ''}">
+            <div id="${wrapperId}" class="modal aitwp_custom_model ${wrapperCls}${this.rtlClass ? ` ${this.rtlClass}` : ''}">
                 <div class="modal-content">
-                    <input type="hidden" id="project_id" value="${projectId}"> 
-                    ${modelHeaderHTML(headerCls)}   
-                    ${modelBodyHTML(widgetType, bodyCls)}   
-                    ${modelFooterHTML(footerCls)}   
-                </div>
+                <input type="hidden" id="project_id" value="${projectId}"> 
+                    ${this.modelHeaderHTML(headerCls)}   
+                    ${this.modelBodyHTML(widgetType, bodyCls)}   
+                    ${this.modelFooterHTML(footerCls)}
+                    </div> 
             </div>`;
 
-        $("body").append(modelHTML);
-    };
+        jQuery("body").append(modelHTML);
+    }
 
-    const getWidgetClasses = (widgetType) => ({
-        wrapperCls: `${widgetType}-container`,
-        headerCls: `${widgetType}-header`,
-        bodyCls: `${widgetType}-body`,
-        footerCls: `${widgetType}-footer`,
-        wrapperId: `${widgetType}-modal`
-    });
+    getWidgetClasses(widgetType) {
+        return {
+            wrapperCls: `${widgetType}-container`,
+            headerCls: `${widgetType}-header`,
+            bodyCls: `${widgetType}-body`,
+            footerCls: `${widgetType}-footer`,
+            wrapperId: `${widgetType}-modal`
+        };
+    }
 
-    const modelBodyHTML = (widgetType, bodyCls) => `
+    modelBodyHTML(widgetType, bodyCls) {
+        return `
         <div class="modal-body ${bodyCls}">
             <div class="aitwp_translate_progress">
                 <div class="aitwp_progress_container">
@@ -261,7 +251,7 @@
                     Please do not leave this window or browser tab while the translation is in progress...
                 </div>
             </div>
-            ${translatorWidget(widgetType)}
+            ${this.translatorWidget(widgetType)}
             <div class="aitwp_string_container">
                 <table class="scrolldown aitwp_strings_table">
                     <thead>
@@ -274,11 +264,13 @@
             </div>
             <div class="notice-container"></div>
         </div>`;
+    }
 
-    const modelHeaderHTML = (headerCls) => `
+    modelHeaderHTML(headerCls) {
+        return `
         <div class="modal-header ${headerCls}">
             <span class="close">&times;</span>
-            <h2>Step 2 - Start Automatic Translation Process</h2>
+            <h2>Step 1 - Start Automatic Translation Process</h2>
             <div class="aitwp_actions">
                 <button class="aitwp_save_strings button button-primary" disabled="true">Merge Translation</button>
             </div>
@@ -292,14 +284,16 @@
         </div>
         <div class="notice inline notice-info is-dismissible">
             Plugin will not translate any strings with HTML or special characters because Chrome In Translator currently does not support HTML and special characters translations.
-                        You can edit translated strings inside Loco Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
+            You can edit translated strings inside Loco Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
         </div>
         <div class="notice inline notice-info is-dismissible">
             Machine translations are not 100% correct.
             Please verify strings before using on the production website.
-        </div>`;    
+        </div>`;
+    }
 
-    const modelFooterHTML = (footerCls) => `
+    modelFooterHTML(footerCls) {
+        return `
         <div class="modal-footer ${footerCls}">
             <div class="aitwp_actions">
                 <button class="aitwp_save_strings button button-primary" disabled="true">Merge Translation</button>
@@ -312,20 +306,103 @@
             </strong>
         </div>
         </div>`;
+    }
 
-    const translatorWidget = (widgetType) => {
+    translatorWidget(widgetType) {
         if (widgetType === "chrome-ai-translator") {
             return `
                 <div class="translator-widget ${widgetType}">
-                    <h3 class="choose-lang">Translate with Chrome Bulit-in AI <span class="dashicons-before dashicons-translation"></span></h3>
+                    <h3 class="choose-lang">Translate with Chrome Built-in AI <span class="dashicons-before dashicons-translation"></span></h3>
                     <div id="chrome_ai_translator_element" Id="chrome_ai_translator_btn"></div>
                 </div>`;
         }
         return '';
-    };
+    }
 
-    // Initialize on load
-    $(document).ready(initialize);
-})(window, jQuery);
+    startTransaltion() {
+        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .aitwp_string_container");
+        if (stringContainer[0].scrollHeight > 100) {
+            jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeIn("slow");
+        }
+    }
 
-// var chromeAiTranslator=new ChromeAiTranslator();
+    beforeTranslate(ele) {
+        const stringContainer = jQuery("#chrome-ai-translator-modal .modal-content .aitwp_string_container");
+
+        const scrollStringContainer = (position) => {
+            stringContainer.scrollTop(position);
+        };
+
+        const stringContainerPosition = stringContainer[0].getBoundingClientRect();
+
+        const eleTopPosition = ele.closest("tr").offsetTop;
+        const containerHeight = stringContainer.height();
+
+        if (eleTopPosition > (containerHeight + stringContainerPosition.y)) {
+            scrollStringContainer(eleTopPosition - containerHeight + ele.offsetHeight);
+        }
+    }
+
+    completeTranslation(data) {
+        jQuery("#chrome-ai-translator-modal .aitwp_stats").show();
+        jQuery("#chrome-ai-translator-modal .aitwp_stats .totalChars").html(data.characterCount);
+        setTimeout(() => {
+            jQuery("#chrome-ai-translator-modal .aitwp_save_strings").prop("disabled", false);
+            jQuery("#chrome-ai-translator-modal .aitwp_translate_progress").fadeOut("slow");
+        }, 4000);
+    }
+
+    languageError(message) {
+        const errorDiv = jQuery(`<div class="modal-error-div"><div class="close" role="button" aria-label="Close">&times;</div><div class="modal-error-content"></div></div>`); // Improved structure for better accessibility and readability
+
+        errorDiv.find(".modal-error-content").html(message);
+
+        jQuery("#chrome-ai-translator-modal").find(".modal-content").replaceWith(errorDiv); // Smooth transition for better user experience
+    }
+}
+
+const filterRawObject = {
+
+    init(rawArray, filterType) {
+        return this.filterContent(rawArray, filterType);
+    },
+
+    filterContent(rawArray, filterType) {
+        return rawArray.filter(item => {
+            if (item.source && !item.target) {
+                return !this.ValidURL(item.source) && !this.isHTML(item.source) && !this.isSpecialChars(item.source) && !this.isEmoji(item.source) && !item.source.includes('#') || this.isPlacehodersChars(item.source);
+            }
+            return false;
+        });
+    },
+
+    ValidURL(str) {
+        const pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+        return pattern.test(str);
+    },
+
+    isHTML(str) {
+        const rgex = /<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i;
+        return rgex.test(str);
+    },
+
+    isSpecialChars(str) {
+        const rgex = /[@^{}|<>]/g;
+        return rgex.test(str);
+    },
+
+    isEmoji(str) {
+        const ranges = [
+            '(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|[\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|[\ud83c[\ude32-\ude3a]|[\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])'
+        ];
+        return str.match(ranges.join('|'));
+    },
+
+    isPlacehodersChars(str) {
+        const rgex = /%s|%d/g;
+        return rgex.test(str);
+    }
+}
+
+// Initialize on load
+jQuery(document).ready(() => new LocoTranslate());
