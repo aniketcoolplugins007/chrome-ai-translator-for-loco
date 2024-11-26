@@ -54,7 +54,7 @@ class SaveTranslation{
             wpnonce: aitwpData.nonce
         };
 
-        jQuery.post(aitwpData.ajaxUrl, data, () => {
+        jQuery.post(aitwpData.ajax_url, data, () => {
             jQuery('#loco-editor nav').find('button').each(function () {
                 const id = this.getAttribute('data-loco');
                 if (id === "auto" && !jQuery(this).hasClass('modal-opened')) {
