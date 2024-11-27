@@ -264,7 +264,7 @@ class LocoTranslate {
         </div>
         <div class="notice inline notice-info is-dismissible">
             Plugin will not translate any strings with HTML or special characters because Chrome In Translator currently does not support HTML and special characters translations.
-            You can edit translated strings inside Loco Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
+            You can edit translated strings inside Translate Editor after merging the translations. Only special characters (%s, %d) fixed at the time of merging of the translations.
         </div>
         <div class="notice inline notice-info is-dismissible">
             Machine translations are not 100% correct.
