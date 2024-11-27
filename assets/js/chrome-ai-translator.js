@@ -88,7 +88,7 @@ class ChromeAiTranslator {
 
     // Method to check the status of the language support
     langStatus = async () => {
-        const supportedLanguages = ['es', 'ja', 'ar', 'bn', 'de', 'fr', 'hi', 'it', 'ko', 'nl', 'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh', 'zh-hant', 'bg', 'cs', 'da', 'el', 'fi', 'hr', 'hu', 'id', 'iw', 'lt', 'no', 'ro', 'sk', 'sl', 'sv', 'uk', 'en-zh'].map(lang => lang.toLowerCase());
+        const supportedLanguages = ['en','es', 'ja', 'ar', 'bn', 'de', 'fr', 'hi', 'it', 'ko', 'nl', 'pl', 'pt', 'ru', 'th', 'tr', 'vi', 'zh', 'zh-hant', 'bg', 'cs', 'da', 'el', 'fi', 'hr', 'hu', 'id', 'iw', 'lt', 'no', 'ro', 'sk', 'sl', 'sv', 'uk', 'en-zh'].map(lang => lang.toLowerCase());
 
         // Check if the translation API is available
         if (!('translation' in self && 'createTranslator' in self.translation)) {
@@ -174,13 +174,28 @@ class ChromeAiTranslator {
         if (!this.translateStatus) return; // Exit if translation is stopped
         const ele = this.translateStringEle[index]; // Get the element to translate
         this.onBeforeTranslate(ele); // Call the before translation callback
+        const orignalText = ele.innerText;
+        let originalString = [];
 
-        const originalString = ele.innerText; // Get the original string
-        const translatedString = await this.translator.translate(originalString); // Translate the string
-        if (translatedString && '' !== translatedString) {
-            this.completedCharacterCount += originalString.length; // Update character count
-            ele.innerText = translatedString; // Set the translated string
+        if(ele.childNodes.length > 0 && !ele.querySelector('.notranslate')){
+            ele.childNodes.forEach(child => {
+                if(child.nodeType === 3 && child.nodeValue.trim() !== ''){
+                    originalString.push(child);
+                }
+            });
+        }else if(ele.querySelector('.notranslate')){
+           ele.childNodes.forEach(child => {
+            if(child.nodeType === 3 && child.nodeValue.trim() !== ''){
+                originalString.push(child);
+                }
+            });
         }
+
+        if(originalString.length > 0){
+            await this.stringTranslationBatch(originalString, 0);
+        }
+
+        this.completedCharacterCount += orignalText.length; // Update character count
         this.completedTranslateIndex = index; // Update completed index
         if(this.progressBarSelector) {
             this.updateProgressBar(); // Update the progress bar
@@ -199,6 +214,20 @@ class ChromeAiTranslator {
             jQuery(this.progressBarSelector).find(".chrome-ai-translator-strings-count").show().find(".totalChars").text(this.completedCharacterCount);
         }
     };
+
+    stringTranslationBatch = async (originalString, index) => {
+        const translatedString = await this.translator.translate(originalString[index].nodeValue); // Translate the string
+
+        if (translatedString && '' !== translatedString) {
+            originalString[index].nodeValue = translatedString; // Set the translated string
+        }
+
+        if(index < originalString.length - 1){
+            await this.stringTranslationBatch(originalString, index + 1);
+        }
+
+        return true;
+    }
 
     // Method to add a progress bar to the UI
     addProgressBar = () => {
